@@ -47,7 +47,6 @@
             border-bottom: 1px solid rgba(128,128,128,0.1);
         }
 
-        /* Yazı Boyutu Büyütüldü ve Efekt Sabitlendi */
         .header h2 { 
             margin: 0; font-size: 2rem; font-weight: 900;
             background: var(--gradient-text);
@@ -68,7 +67,7 @@
         }
 
         .status-dot {
-            height: 9px; width: 9px; background-color: var(--status-color);
+            height: 10px; width: 10px; background-color: var(--status-color);
             border-radius: 50%; animation: pulse-glow 1.5s infinite;
         }
 
@@ -102,22 +101,18 @@
 
         .footer-info { display: flex; justify-content: space-between; padding: 12px 40px; font-size: 0.9rem; background: rgba(0,0,0,0.15); font-weight: bold; }
 
-        /* MOBİL - Yazılar Burada da Büyütüldü */
         @media screen and (max-width: 768px) {
             .header { padding: 12px 15px; }
             .header h2 { font-size: 1.5rem; }
             .digital-clock { font-size: 1.4rem; }
             .table-container { padding: 0 8px; }
-            
             tr { min-height: 55px; }
-            th, td { font-size: 0.9rem; padding: 6px; }
-            
+            th, td { font-size: 0.95rem; padding: 6px; }
             th:nth-child(1), td:nth-child(1) { flex: 0.35; }
             th:nth-child(2), td:nth-child(2) { flex: 1.8; padding-left: 10px; }
             th:nth-child(3), td:nth-child(3) { flex: 0.8; }
             th:nth-child(4), td:nth-child(4) { flex: 0.8; }
             th:nth-child(5), td:nth-child(5) { flex: 0.9; }
-
             .footer-info { padding: 10px 15px; font-size: 0.8rem; }
         }
     </style>
@@ -153,7 +148,7 @@
     </div>
 
     <div class="footer-info">
-        <span id="total-label">Yükleniyor...</span>
+        <span id="total-label">Senkronize ediliyor...</span>
         <span id="page-label">Sayfa 1 / 1</span>
     </div>
 </div>
@@ -162,6 +157,7 @@
     let allEntries = [];
     let currentPage = 0;
     const othersPerPage = 9; 
+    let lastDataHash = ""; // Veri değişikliğini kontrol etmek için
 
     function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleFullScreen() {
@@ -177,10 +173,18 @@
     async function fetchData() {
         try {
             const response = await fetch(CSV_URL + '&cb=' + Date.now());
+            if (!response.ok) throw new Error("Network Error");
+            
             const rawData = await response.text();
+            
+            // Eğer gelen veri boşsa veya bir öncekiyle aynıysa render yapma (Titremeyi önler)
+            if (rawData === lastDataHash) return;
+            lastDataHash = rawData;
+
             const rows = rawData.split(/\r?\n/);
             const separator = rows[0].includes(';') ? ';' : ',';
             let tempEntries = [];
+            
             for (let i = 1; i < rows.length; i++) {
                 const cols = rows[i].split(separator);
                 if (cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
@@ -193,15 +197,27 @@
                     });
                 }
             }
-            tempEntries.sort((a, b) => a.total - b.total);
+
+            // Kararlı Sıralama: Önce Toplam Süre, Sonra İsim
+            tempEntries.sort((a, b) => {
+                if (a.total !== b.total) return a.total - b.total;
+                return a.name.localeCompare(b.name);
+            });
+
             allEntries = tempEntries;
             renderTable();
-        } catch (err) { console.error("Sync Error"); }
+        } catch (err) { 
+            console.error("Senkronizasyon Hatası:", err);
+            document.getElementById('total-label').innerText = "Bağlantı Hatası! Yeniden deneniyor...";
+        }
     }
 
     function renderTable() {
         const tbody = document.getElementById('display-area');
-        if (allEntries.length === 0) return;
+        if (allEntries.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="width:100%">Henüz veri bulunamadı.</td></tr>';
+            return;
+        }
 
         const leader = allEntries[0];
         let html = `<tr class="row-first sticky-leader">
@@ -214,6 +230,8 @@
 
         const others = allEntries.slice(1);
         const totalPages = Math.max(1, Math.ceil(others.length / othersPerPage));
+        
+        // Sayfa taşma kontrolü
         if (currentPage >= totalPages) currentPage = 0;
 
         const start = currentPage * othersPerPage;
@@ -234,16 +252,18 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
+    // Sayfa otomatik geçiş döngüsü
     setInterval(() => {
         const totalPages = Math.ceil((allEntries.length - 1) / othersPerPage);
         if (totalPages > 1) {
             currentPage = (currentPage + 1) % totalPages;
             renderTable();
         }
-    }, 15000);
+    }, 15000); // 15 saniyede bir sayfa değiştir
 
+    // İlk yükleme ve ana döngüler
     fetchData();
-    setInterval(fetchData, 10000);
+    setInterval(fetchData, 10000); // 10 saniyede bir veriyi tazele
     updateClock();
 </script>
 </body>
