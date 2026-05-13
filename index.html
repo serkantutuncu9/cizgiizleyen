@@ -11,17 +11,15 @@
             --vurgu: #00f2ff;
             --altin: #ffd700;
             --metin: #e0e0e0;
-            --border-rgba: rgba(255,255,255,0.1);
         }
 
-        /* AYDINLIK MOD - KESİN LACİVERT (NAVY) AYARLARI */
-        .light-theme {
-            --ana-renk: #eef1f6 !important;
+        /* AYDINLIK MOD - LACİVERT (NAVY) GARANTİ AYARLAR */
+        body.light-theme {
+            --ana-renk: #f0f4f8 !important;
             --kart-bg: #ffffff !important;
-            --vurgu: #000080 !important; /* Saf Lacivert */
-            --altin: #8b6508 !important;
-            --metin: #000033 !important; /* Çok koyu lacivert metin */
-            --border-rgba: rgba(0,0,128,0.2) !important;
+            --vurgu: #000080 !important; /* Lacivert */
+            --metin: #000033 !important;
+            --altin: #a67c00 !important;
         }
 
         body { 
@@ -30,11 +28,10 @@
             padding: 0;
             font-family: 'Segoe UI', system-ui, sans-serif;
             color: var(--metin);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .board-container { 
@@ -43,8 +40,6 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            box-sizing: border-box;
-            overflow: hidden;
         }
 
         .header {
@@ -52,33 +47,20 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 40px;
-            flex-shrink: 0;
-            border-bottom: 2px solid var(--border-rgba);
-            background: rgba(0,0,0,0.03);
-            z-index: 10;
-        }
-
-        /* Başlık rengi aydınlık modda lacivert olsun */
-        .light-theme .header h2 {
-            background: none !important;
-            -webkit-text-fill-color: var(--vurgu) !important;
-            color: var(--vurgu) !important;
+            background: rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(128,128,128,0.1);
         }
 
         .header h2 { 
             margin: 0; 
-            background: linear-gradient(90deg, #ffffff 0%, var(--vurgu) 50%, #ffffff 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            animation: shine 5s linear infinite;
+            font-size: 1.6rem;
+            color: var(--vurgu);
         }
 
-        @keyframes shine { to { background-position: 200% center; } }
+        .light-theme .header h2 { color: #000080 !important; }
 
         .digital-clock {
-            font-size: clamp(1rem, 2.5vw, 1.6rem);
+            font-size: 1.5rem;
             font-family: 'Courier New', monospace;
             font-weight: bold;
             color: var(--vurgu);
@@ -86,135 +68,109 @@
 
         .table-container {
             flex-grow: 1;
-            padding: 10px 30px;
+            padding: 0 30px;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+            position: relative;
         }
-
-        .table-container::-webkit-scrollbar { width: 6px; }
-        .table-container::-webkit-scrollbar-thumb { background: var(--vurgu); border-radius: 10px; }
 
         table { 
             width: 100%; 
-            min-height: 100%; 
-            display: flex;
-            flex-direction: column;
+            border-collapse: separate; 
+            border-spacing: 0 8px;
         }
 
-        thead { 
-            display: block; 
-            width: 100%; 
-            margin-bottom: 10px;
+        /* BAŞLIK VE LİDER SABİTLEME */
+        thead {
             position: sticky;
             top: 0;
+            z-index: 100;
             background: var(--kart-bg);
-            z-index: 5;
         }
 
-        tbody { 
-            display: grid;
-            grid-template-rows: repeat(10, minmax(60px, 1fr)); 
-            gap: 8px;
-            width: 100%;
+        /* Lider satırını sabitlemek için özel ID kullanacağız JS tarafında */
+        .sticky-leader {
+            position: sticky;
+            top: 45px; /* Sütun başlıklarının hemen altında dursun */
+            z-index: 90;
+            background: var(--kart-bg);
         }
 
         tr { 
             display: flex; 
-            align-items: center; 
             width: 100%;
             background: rgba(128,128,128,0.05);
-            border-radius: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
             min-height: 60px;
         }
 
-        .light-theme tr {
-            background: rgba(0,0,128,0.04) !important;
-            border: 1px solid rgba(0,0,128,0.1) !important;
-        }
+        .light-theme tr { background: rgba(0,0,128,0.05); }
 
         th, td { 
             flex: 1; 
-            text-align: center; 
             display: flex; 
             align-items: center; 
             justify-content: center;
-            font-size: clamp(0.85rem, 2vh, 1.3rem);
+            font-size: clamp(0.9rem, 2vh, 1.3rem);
         }
 
         th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
-        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: clamp(15px, 4vw, 40px); } 
+        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 20px; } 
         th:nth-child(3), td:nth-child(3) { flex: 1; } 
         th:nth-child(4), td:nth-child(4) { flex: 1; } 
         th:nth-child(5), td:nth-child(5) { flex: 1.2; }
 
         .row-first { 
-            background: rgba(255, 215, 0, 0.12) !important; 
-            border: 2px solid rgba(255, 215, 0, 0.4) !important;
+            background: rgba(255, 215, 0, 0.15) !important; 
+            border: 2px solid var(--altin) !important;
         }
 
         .toplam-vurgu { color: var(--vurgu); font-weight: bold; }
-        .trophy-icon { width: 24px; height: 24px; fill: var(--altin); }
+        .light-theme .toplam-vurgu { color: #000080 !important; }
 
         .footer-info {
             display: flex;
             justify-content: space-between;
-            padding: 10px 40px;
+            padding: 8px 40px;
             font-size: 0.85rem;
-            background: rgba(0,0,0,0.05);
-            flex-shrink: 0;
-            border-top: 1px solid var(--border-rgba);
+            background: rgba(0,0,0,0.1);
         }
 
-        .status-dot { height: 8px; width: 8px; background-color: #00ff88; border-radius: 50%; display: inline-block; margin-right: 8px; }
-        .light-theme .status-dot { background-color: #000080 !important; box-shadow: 0 0 5px rgba(0,0,128,0.5); }
-        
-        .icon-btn {
-            cursor: pointer;
-            color: var(--vurgu);
-            font-size: 1.2rem;
-            opacity: 0.8;
-            transition: transform 0.2s;
-        }
-        .icon-btn:hover { transform: scale(1.1); opacity: 1; }
+        .icon-btn { cursor: pointer; color: var(--vurgu); font-size: 1.2rem; margin-left: 15px; }
 
         @media screen and (max-width: 600px) {
-            tbody { grid-template-rows: repeat(10, auto); }
-            tr { min-height: 50px; }
             th:nth-child(3), td:nth-child(3) { display: none; }
-            .header { padding: 10px 15px; }
-            .footer-info { padding: 10px 15px; }
+            .header, .footer-info { padding: 10px 15px; }
         }
     </style>
 </head>
-<body>
+<body class="dark-theme"> <!-- Varsayılan dark -->
 
-<div class="board-container" id="mainBoard">
+<div class="board-container">
     <div class="header">
-        <h2 id="main-title">SKOR TABLOSU</h2>
-        <div style="text-align: right;">
-            <div style="display:flex; align-items:center; gap:15px; justify-content: flex-end; margin-bottom: 5px;">
-                <span style="font-size:0.65rem; color:var(--vurgu); letter-spacing:1px; font-weight: bold;">
-                    <span class="status-dot"></span> SİSTEM AKTİF
-                </span>
-                <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
-                <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
+        <h2>SKOR TABLOSU</h2>
+        <div style="display:flex; align-items:center;">
+            <div style="text-align: right; margin-right: 20px;">
+                <div class="digital-clock" id="live-clock">00:00:00</div>
             </div>
-            <div class="digital-clock" id="live-clock">00:00:00</div>
+            <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
+            <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
         </div>
     </div>
 
     <div class="table-container">
         <table>
             <thead>
-                <tr style="background:transparent; border:none;">
+                <tr>
                     <th>SIRA</th>
-                    <th style="justify-content: flex-start; padding-left: clamp(15px, 4vw, 40px);">TAKIM ADI</th>
+                    <th style="justify-content: flex-start; padding-left: 20px;">TAKIM ADI</th>
                     <th>SÜRE</th>
                     <th>CEZA</th>
                     <th>TOPLAM</th>
                 </tr>
             </thead>
             <tbody id="display-area">
+                <!-- Veriler buraya gelecek -->
             </tbody>
         </table>
     </div>
@@ -228,17 +184,14 @@
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const itemsPerPage = 10; 
-    
-    function toggleTheme() { 
-        document.body.classList.toggle('light-theme'); 
-    }
+    const itemsPerPage = 11; // 1 lider + 10 normal satır
 
+    function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleFullScreen() {
         if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-        else if (document.exitFullscreen) document.exitFullscreen();
+        else document.exitFullscreen();
     }
-
+    
     function updateClock() { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); }
     setInterval(updateClock, 1000);
 
@@ -253,12 +206,12 @@
             let tempEntries = [];
             for (let i = 1; i < rows.length; i++) {
                 const cols = rows[i].split(separator);
-                if (cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
-                    let totalVal = parseFloat(cols[4] ? cols[4].replace(/"/g, '').replace(',', '.') : 999);
+                if (cols[1] && cols[1].trim() !== "") {
+                    let totalVal = parseFloat(cols[4]?.replace(',', '.'));
                     tempEntries.push({
-                        name: cols[1].replace(/"/g, '').trim(),
-                        time: cols[2] ? cols[2].replace(/"/g, '').trim() : '0',
-                        penalty: cols[3] ? cols[3].replace(/"/g, '').trim() : '0',
+                        name: cols[1].trim(),
+                        time: cols[2]?.trim() || '0',
+                        penalty: cols[3]?.trim() || '0',
                         total: isNaN(totalVal) ? 999 : totalVal
                     });
                 }
@@ -266,20 +219,26 @@
             tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
             renderTable();
-        } catch (err) { console.error("Veri hatası."); }
+        } catch (err) { console.error("Veri hatası"); }
     }
 
     function renderTable() {
         const tbody = document.getElementById('display-area');
         if (allEntries.length === 0) return;
 
-        const trophySvg = `<svg class="trophy-icon" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1c1.88-.31 3.41-1.74 3.61-3.61C19.08 11.63 21 9.55 21 7V6c0-1.1-.9-2-2-2zM5 7h2v2H5V7zm14 2h-2V7h2v2z" /></svg>`;
-
+        // 1. SIRADAKİ TAKIM (SABİT)
         const leader = allEntries[0];
-        let html = `<tr class="row-first"><td>${trophySvg}</td><td>${leader.name}</td><td>${leader.time}s</td><td style="color: #ff4d4d">+${leader.penalty}s</td><td class="toplam-vurgu">${leader.total}s</td></tr>`;
+        let html = `<tr class="row-first sticky-leader">
+            <td><i class="fas fa-trophy" style="color:var(--altin)"></i></td>
+            <td>${leader.name}</td>
+            <td>${leader.time}s</td>
+            <td style="color:#ff4d4d">+${leader.penalty}s</td>
+            <td class="toplam-vurgu">${leader.total}s</td>
+        </tr>`;
 
+        // DİĞER TAKIMLAR
         const otherEntries = allEntries.slice(1);
-        const rowsToShow = itemsPerPage - 1; 
+        const rowsToShow = 10;
         const totalPages = Math.max(1, Math.ceil(otherEntries.length / rowsToShow));
         
         if (currentPage >= totalPages) currentPage = 0;
@@ -287,7 +246,13 @@
         const currentBatch = otherEntries.slice(start, start + rowsToShow);
 
         currentBatch.forEach((item, index) => {
-            html += `<tr><td>${start + index + 2}</td><td>${item.name}</td><td>${item.time}s</td><td style="color: #ff4d4d">+${item.penalty}s</td><td class="toplam-vurgu">${item.total}s</td></tr>`;
+            html += `<tr>
+                <td>${start + index + 2}</td>
+                <td>${item.name}</td>
+                <td>${item.time}s</td>
+                <td style="color:#ff4d4d">+${item.penalty}s</td>
+                <td class="toplam-vurgu">${item.total}s</td>
+            </tr>`;
         });
 
         tbody.innerHTML = html;
@@ -296,15 +261,15 @@
     }
 
     setInterval(() => {
-        const totalPages = Math.ceil((allEntries.length - 1) / (itemsPerPage - 1));
+        const totalPages = Math.ceil((allEntries.length - 1) / 10);
         if (totalPages > 1) {
             currentPage = (currentPage + 1) % totalPages;
             renderTable();
         }
-    }, 20000);
+    }, 15000);
 
-    setInterval(fetchData, 10000);
     fetchData();
+    setInterval(fetchData, 10000);
     updateClock();
 </script>
 </body>
