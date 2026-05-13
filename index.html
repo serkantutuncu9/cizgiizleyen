@@ -3,215 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Çizgi İzleyen Yarışma Sonuçları</title>
-    <!-- Google Fonts ve Iconlar -->
+    <title>Yarışma Skorboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
-        :root {
-            --bg-color: #f4f7f6;
-            --text-color: #333;
-            --card-bg: #ffffff;
-            --accent-color: #2c3e50;
-            --border-color: #ddd;
-        }
+        :root { --bg: #f4f7f6; --text: #333; --card: #ffffff; --accent: #2c3e50; --border: #ddd; }
+        [data-theme="dark"] { --bg: #1a1a1b; --text: #e0e0e0; --card: #2d2d2e; --accent: #d4af37; --border: #444; }
+        
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: 0.3s; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 20px; }
+        
+        .system-status { display: flex; align-items: center; font-weight: bold; font-size: 14px; letter-spacing: 1px; }
+        .dot { height: 10px; width: 10px; background-color: #2ecc71; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 8px #2ecc71; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } }
 
-        [data-theme="dark"] {
-            --bg-color: #1a1a1b;
-            --text-color: #e0e0e0;
-            --card-bg: #2d2d2e;
-            --accent-color: #d4af37; /* Altın/Klasik tonu */
-            --border-color: #444;
-        }
+        .control-btn { background: none; border: none; color: var(--text); cursor: pointer; font-size: 20px; padding: 5px; transition: 0.2s; }
+        .control-btn:hover { color: var(--accent); transform: scale(1.1); }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        /* Üst Header Alanı */
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1000px;
-            margin: 0 auto 20px auto;
-            padding: 10px;
-        }
-
-        /* Sistem Aktif Kısmı */
-        .system-status {
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-
-        .dot {
-            height: 10px;
-            width: 10px;
-            background-color: #2ecc71;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            box-shadow: 0 0 8px #2ecc71;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        /* Sağ Üst Butonlar */
-        .controls {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .control-btn {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            font-size: 20px;
-            transition: transform 0.2s;
-            padding: 5px;
-        }
-
-        .control-btn:hover {
-            transform: scale(1.1);
-            color: var(--accent-color);
-        }
-
-        /* Tablo Tasarımı */
-        .table-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 18px;
-            text-align: left;
-            text-transform: uppercase;
-            font-size: 14px;
-        }
-
-        td {
-            padding: 15px 18px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 16px;
-        }
-
-        tr:last-child td { border-bottom: none; }
-        tr:hover { background-color: rgba(0,0,0,0.02); }
-
-        /* Tam Ekran İkonu Gizleme/Gösterme */
-        #fullscreen-btn { font-size: 18px; }
+        .table-container { max-width: 1000px; margin: 0 auto; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: var(--accent); color: white; padding: 18px; text-align: center; text-transform: uppercase; font-size: 14px; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 16px; text-align: center; }
+        .lider { background: rgba(212, 175, 55, 0.1) !important; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header-container">
-        <div class="system-status">
-            <span class="dot"></span> SİSTEM AKTİF
-        </div>
-        
-        <div class="controls">
-            <button id="theme-toggle" class="control-btn" title="Mod Değiştir">
-                <i class="fas fa-lightbulb"></i>
-            </button>
-            <button id="fullscreen-btn" class="control-btn" title="Tam Ekran">
-                <i class="fas fa-expand"></i>
-            </button>
+        <div class="system-status"><span class="dot"></span> SİSTEM AKTİF</div>
+        <div style="display: flex; gap: 15px;">
+            <button id="theme-toggle" class="control-btn"><i class="fas fa-lightbulb"></i></button>
+            <button id="fullscreen-btn" class="control-btn"><i class="fas fa-expand"></i></button>
         </div>
     </div>
 
     <div class="table-container">
         <table>
             <thead>
-                <tr id="table-header">
-                    <!-- Başlıklar buraya gelecek -->
+                <tr>
+                    <th>SIRA</th>
+                    <th>TAKIM ADI</th>
+                    <th>SÜRE</th>
+                    <th>CEZA</th>
+                    <th>TOPLAM</th>
                 </tr>
             </thead>
             <tbody id="table-body">
-                <!-- Veriler buraya gelecek -->
+                <tr><td colspan="5">Veriler çekiliyor...</td></tr>
             </tbody>
         </table>
     </div>
 
     <script>
-        // Google Sheets CSV Linkini Buraya Yapıştır
-        const sheetUrl = "BURAYA_CSV_LINKINI_YAPISTIR"; 
+        // ÖNEMLİ: Kendi Google Sheets CSV linkini buraya tırnak içine yapıştır
+        const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv";
 
-        // Karanlık Mod Yönetimi
-        const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        themeToggle.addEventListener('click', () => {
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                themeToggle.innerHTML = '<i class="fas fa-lightbulb"></i>';
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                themeToggle.innerHTML = '<i class="far fa-lightbulb"></i>';
-            }
-        });
-
-        // Tam Ekran Yönetimi
-        document.getElementById('fullscreen-btn').addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-        });
-
-        // Veri Çekme Fonksiyonu
         async function fetchData() {
             try {
-                const response = await fetch(sheetUrl);
-                const data = await response.text();
-                const rows = data.split('\n').map(row => row.split(','));
+                const response = await fetch(sheetUrl + "&cache=" + Date.now());
+                const text = await response.text();
+                const rows = text.split(/\r?\n/).map(row => row.split(/[,;]/)); // Virgül veya noktalı virgül ayrımı
                 
-                const header = rows[0];
-                const bodyRows = rows.slice(1);
-
-                // Başlıkları Oluştur
-                document.getElementById('table-header').innerHTML = 
-                    header.map(h => `<th>${h}</th>`).join('');
-
-                // Satırları Oluştur
-                document.getElementById('table-body').innerHTML = 
-                    bodyRows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('');
+                let html = "";
+                // Başlık satırını atlayıp (i=1) verileri döngüye alıyoruz
+                for (let i = 1; i < rows.length; i++) {
+                    const cols = rows[i];
+                    if (cols[1] && cols[1].trim() !== "") { // Takım adı boş değilse
+                        const isLeader = i === 1 ? "class='lider'" : "";
+                        html += `<tr ${isLeader}>
+                            <td>${i}</td>
+                            <td style="text-align:left; padding-left:40px;">${cols[1].replace(/"/g, '')}</td>
+                            <td>${cols[2] || '0'}s</td>
+                            <td>+${cols[3] || '0'}s</td>
+                            <td style="font-weight:bold;">${cols[4] || '0'}s</td>
+                        </tr>`;
+                    }
+                }
+                document.getElementById('table-body').innerHTML = html || "<tr><td colspan='5'>Kayıtlı veri bulunamadı.</td></tr>";
             } catch (error) {
-                console.error("Veri çekilemedi:", error);
+                document.getElementById('table-body').innerHTML = "<tr><td colspan='5'>Bağlantı hatası! Linki kontrol edin.</td></tr>";
             }
         }
 
-        // Her 30 saniyede bir güncelle
+        // Tema ve Tam Ekran İşlemleri
+        const themeBtn = document.getElementById('theme-toggle');
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.body.hasAttribute('data-theme');
+            isDark ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'dark');
+            themeBtn.innerHTML = isDark ? '<i class="fas fa-lightbulb"></i>' : '<i class="far fa-lightbulb"></i>';
+        });
+
+        document.getElementById('fullscreen-btn').addEventListener('click', () => {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        });
+
         fetchData();
-        setInterval(fetchData, 30000);
+        setInterval(fetchData, 20000); // 20 saniyede bir güncelle
     </script>
 </body>
 </html>
