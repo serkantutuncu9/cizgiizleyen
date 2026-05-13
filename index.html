@@ -56,7 +56,6 @@
             border-bottom: 1px solid rgba(128,128,128,0.1);
         }
 
-        /* 1. TALEP: Skor Tablosu Yazısındaki Hareketli Geçiş Efekti */
         .header h2 { 
             margin: 0; 
             font-weight: 600; 
@@ -70,11 +69,8 @@
             animation: shine 5s linear infinite;
         }
 
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
+        @keyframes shine { to { background-position: 200% center; } }
 
-        /* 2. TALEP: Yanıp Sönen Sistem Aktif Noktası */
         .status-dot {
             height: 8px;
             width: 8px;
@@ -87,8 +83,7 @@
         }
 
         @keyframes blink { 
-            0%, 100% { opacity: 1; } 
-            50% { opacity: 0.3; } 
+            0%, 100% { opacity: 1; } 50% { opacity: 0.3; } 
         }
 
         .digital-clock {
@@ -99,7 +94,7 @@
         }
 
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        th { color: var(--gray); font-size: 0.75rem; padding: 10px; text-transform: uppercase; opacity: 0.6; }
+        th { color: var(--metin); font-size: 0.75rem; padding: 10px; text-transform: uppercase; opacity: 0.5; }
         td { padding: 12px; background: rgba(128,128,128,0.05); font-size: 1.1rem; text-align: center; }
         td:first-child { border-radius: 12px 0 0 12px; width: 60px; }
         td:last-child { border-radius: 0 12px 12px 0; }
@@ -185,7 +180,7 @@
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const itemsPerPage = 10; 
+    const itemsPerPage = 10; // Toplam görünen satır sayısı (1 lider + 9 diğer)
     
     const trophySvg = `<svg class="trophy-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1c1.88-.31 3.41-1.74 3.61-3.61C19.08 11.63 21 9.55 21 7V6c0-1.1-.9-2-2-2zM5 7h2v2H5V7zm14 2h-2V7h2v2z" /></svg>`;
 
@@ -231,17 +226,25 @@
     function renderTable() {
         const tbody = document.getElementById('display-area');
         if (allEntries.length === 0) return;
-        const effectiveItemsPerPage = itemsPerPage - 1; 
-        const totalPages = Math.max(1, Math.ceil((allEntries.length - 1) / effectiveItemsPerPage));
-        if (currentPage >= totalPages) currentPage = 0;
 
+        // 1. TAKIMI SABİTLE
         const leader = allEntries[0];
         let html = `<tr class="row-first"><td>${trophySvg}</td><td style="text-align: left; padding-left: 20px; color:var(--metin); font-weight: 500;">${leader.name}</td><td>${leader.time}s</td><td style="color: #ff6b6b">+${leader.penalty}s</td><td class="toplam-vurgu">${leader.total}s</td></tr>`;
 
-        const start = currentPage * effectiveItemsPerPage + 1;
-        const end = start + effectiveItemsPerPage;
-        allEntries.slice(start, end).forEach((item, index) => {
-            html += `<tr class="fade-in"><td>${start + index + 1}</td><td style="text-align: left; padding-left: 20px; color:var(--metin);">${item.name}</td><td>${item.time}s</td><td style="color: #ff6b6b">+${item.penalty}s</td><td class="toplam-vurgu">${item.total}s</td></tr>`;
+        // DİĞER TAKIMLARIN SAYFALAMA MANTIĞI
+        const otherEntries = allEntries.slice(1);
+        const rowsToShow = itemsPerPage - 1; // 9 satır
+        const totalPages = Math.max(1, Math.ceil(otherEntries.length / rowsToShow));
+        
+        if (currentPage >= totalPages) currentPage = 0;
+
+        const start = currentPage * rowsToShow;
+        const end = start + rowsToShow;
+        const currentBatch = otherEntries.slice(start, end);
+
+        currentBatch.forEach((item, index) => {
+            const realRank = start + index + 2; // +1 dizi kayması, +1 lider
+            html += `<tr class="fade-in"><td>${realRank}</td><td style="text-align: left; padding-left: 20px; color:var(--metin);">${item.name}</td><td>${item.time}s</td><td style="color: #ff6b6b">+${item.penalty}s</td><td class="toplam-vurgu">${item.total}s</td></tr>`;
         });
 
         tbody.innerHTML = html;
@@ -249,9 +252,14 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
+    // SAYFA DEĞİŞTİRME DÖNGÜSÜ
     setInterval(() => {
-        if (allEntries.length > itemsPerPage) {
-            currentPage = (currentPage + 1) % Math.ceil((allEntries.length - 1) / (itemsPerPage - 1));
+        const otherEntriesCount = allEntries.length - 1;
+        const rowsToShow = itemsPerPage - 1;
+        const totalPages = Math.ceil(otherEntriesCount / rowsToShow);
+        
+        if (otherEntriesCount > rowsToShow) {
+            currentPage = (currentPage + 1) % totalPages;
             renderTable();
         }
     }, 20000);
