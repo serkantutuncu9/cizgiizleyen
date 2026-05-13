@@ -11,7 +11,7 @@
             --vurgu: #00f2ff;
             --altin: #ffd700;
             --metin: #e0e0e0;
-            --status-bg: #00ff88;
+            --status-color: #00ff88;
         }
 
         body.light-theme {
@@ -20,7 +20,7 @@
             --vurgu: #000080 !important;
             --metin: #000033 !important;
             --altin: #a67c00 !important;
-            --status-bg: #000080 !important;
+            --status-color: #000080 !important;
         }
 
         * { transition: background-color 0.4s ease, color 0.4s ease; }
@@ -44,7 +44,6 @@
             z-index: 1000;
         }
 
-        /* Başlık Efekti */
         .header h2 { 
             margin: 0; font-size: 1.8rem; font-weight: 800;
             background: linear-gradient(90deg, var(--metin) 0%, var(--vurgu) 50%, var(--metin) 100%);
@@ -56,37 +55,55 @@
 
         @keyframes shine { to { background-position: 200% center; } }
 
-        .status-area {
-            display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
-        }
+        .status-block { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 
         .system-status {
             font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;
-            display: flex; align-items: center; gap: 8px; color: var(--vurgu);
+            display: flex; align-items: center; gap: 6px; color: var(--vurgu);
+            margin-bottom: 2px;
         }
 
+        /* Sistem Aktif Parlama Efekti */
         .status-dot {
-            height: 8px; width: 8px; background-color: var(--status-bg);
-            border-radius: 50%; box-shadow: 0 0 8px var(--status-bg);
+            height: 7px; width: 7px; background-color: var(--status-color);
+            border-radius: 50%; 
+            animation: pulse-glow 1.5s infinite;
         }
 
-        .digital-clock { font-size: 1.5rem; font-family: monospace; font-weight: bold; color: var(--vurgu); }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
 
-        .table-container { flex-grow: 1; padding: 0 30px; overflow-y: auto; position: relative; }
+        .light-theme .status-dot { animation: pulse-glow-light 1.5s infinite; }
+        @keyframes pulse-glow-light {
+            0% { box-shadow: 0 0 0 0 rgba(0, 0, 128, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 0, 128, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 0, 128, 0); }
+        }
 
+        .clock-controls { display: flex; align-items: center; gap: 15px; }
+        .digital-clock { font-size: 1.6rem; font-family: monospace; font-weight: bold; color: var(--vurgu); }
+
+        /* Küçük İkonlar */
+        .icon-btn { cursor: pointer; color: var(--vurgu); font-size: 1rem; opacity: 0.8; }
+        .icon-btn:hover { opacity: 1; transform: scale(1.1); }
+
+        .table-container { flex-grow: 1; padding: 0 30px; overflow-y: auto; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
 
         thead { position: sticky; top: 0; z-index: 100; background: var(--kart-bg); }
         .sticky-leader {
             position: sticky; top: 48px; z-index: 99;
             background: var(--kart-bg) !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         tr { display: flex; width: 100%; border-radius: 10px; min-height: 60px; background: rgba(128,128,128,0.05); }
         .light-theme tr { background: rgba(0,0,128,0.04); }
 
-        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
+        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
         th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
         th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 25px; } 
         th:nth-child(3), td:nth-child(3) { flex: 1; } 
@@ -95,15 +112,11 @@
 
         .row-first { background: rgba(255, 215, 0, 0.12) !important; border: 2px solid var(--altin) !important; }
 
-        .footer-info { display: flex; justify-content: space-between; padding: 10px 40px; font-size: 0.85rem; background: rgba(0,0,0,0.05); }
-
-        .controls { display: flex; align-items: center; gap: 15px; margin-left: 15px; }
-        .icon-btn { cursor: pointer; color: var(--vurgu); font-size: 1.2rem; }
+        .footer-info { display: flex; justify-content: space-between; padding: 10px 40px; font-size: 0.8rem; background: rgba(0,0,0,0.05); }
 
         @media screen and (max-width: 600px) {
             th:nth-child(3), td:nth-child(3) { display: none; }
             .header, .footer-info { padding: 10px 15px; }
-            .sticky-leader { top: 42px; }
         }
     </style>
 </head>
@@ -112,15 +125,13 @@
 <div class="board-container">
     <div class="header">
         <h2>SKOR TABLOSU</h2>
-        <div class="status-area">
-            <div style="display:flex; align-items:center;">
-                <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
-                <div class="controls">
-                    <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
-                    <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
-                </div>
+        <div class="status-block">
+            <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
+            <div class="clock-controls">
+                <div class="digital-clock" id="live-clock">00:00:00</div>
+                <i class="fas fa-lightbulb icon-btn" title="Tema" onclick="toggleTheme()"></i>
+                <i class="fas fa-expand icon-btn" title="Tam Ekran" onclick="toggleFullScreen()"></i>
             </div>
-            <div class="digital-clock" id="live-clock">00:00:00</div>
         </div>
     </div>
 
@@ -140,7 +151,7 @@
     </div>
 
     <div class="footer-info">
-        <span id="total-label">Yükleniyor...</span>
+        <span id="total-label">Veriler Güncelleniyor...</span>
         <span id="page-label">Sayfa 1 / 1</span>
     </div>
 </div>
@@ -148,7 +159,7 @@
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const othersPerPage = 9; // Lider (1) + Diğerleri (9) = Toplam 10
+    const othersPerPage = 9; 
 
     function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleFullScreen() {
@@ -190,7 +201,6 @@
         const tbody = document.getElementById('display-area');
         if (allEntries.length === 0) return;
 
-        // 1. Sabit Lider
         const leader = allEntries[0];
         let html = `<tr class="row-first sticky-leader">
             <td><i class="fas fa-trophy" style="color:var(--altin)"></i></td>
@@ -199,7 +209,6 @@
             <td>${leader.total}s</td>
         </tr>`;
 
-        // Sayfalama (Lider hariç)
         const others = allEntries.slice(1);
         const totalPages = Math.max(1, Math.ceil(others.length / othersPerPage));
         if (currentPage >= totalPages) currentPage = 0;
