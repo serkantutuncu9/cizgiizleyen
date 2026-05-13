@@ -40,11 +40,12 @@
             border: 1px solid var(--border-rgba);
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             max-width: 1000px;
-            height: 88vh;
+            height: 90vh;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
+            transition: background 0.3s ease;
         }
 
         .header {
@@ -82,9 +83,7 @@
             animation: blink 2s infinite;
         }
 
-        @keyframes blink { 
-            0%, 100% { opacity: 1; } 50% { opacity: 0.3; } 
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .digital-clock {
             font-size: 1.3rem;
@@ -136,6 +135,19 @@
         
         .fade-in { animation: fadeIn 0.4s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* MOBİL UYUMLULUK AYARLARI */
+        @media screen and (max-width: 600px) {
+            body { padding: 10px; overflow-y: auto; }
+            .board-container { padding: 15px; height: auto; min-height: 95vh; }
+            .header { flex-direction: column; gap: 10px; text-align: center; }
+            .header h2 { font-size: 1.1rem; }
+            .digital-clock { font-size: 1.1rem; }
+            th { font-size: 0.6rem; padding: 5px; }
+            td { font-size: 0.85rem; padding: 10px 4px; }
+            td:nth-child(2) { max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+            .trophy-icon { width: 20px; height: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -148,7 +160,7 @@
                 <span style="font-size:0.6rem; color:var(--vurgu); letter-spacing:2px; display: flex; align-items: center;">
                     <span class="status-dot"></span> SİSTEM AKTİF
                 </span>
-                <i class="fas fa-lightbulb theme-btn" onclick="toggleTheme()"></i>
+                <i class="fas fa-lightbulb theme-btn" onclick="toggleTheme()" title="Mod Değiştir"></i>
                 <svg class="fullscreen-btn" onclick="toggleFullScreen()" viewBox="0 0 24 24" width="18">
                     <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="currentColor"></path>
                 </svg>
@@ -168,6 +180,7 @@
                 </tr>
             </thead>
             <tbody id="display-area">
+                <!-- Veriler buraya gelecek -->
             </tbody>
         </table>
     </div>
@@ -180,7 +193,7 @@
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const itemsPerPage = 10; // Toplam görünen satır sayısı (1 lider + 9 diğer)
+    const itemsPerPage = 10; // 1 lider + 9 diğer satır
     
     const trophySvg = `<svg class="trophy-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1c1.88-.31 3.41-1.74 3.61-3.61C19.08 11.63 21 9.55 21 7V6c0-1.1-.9-2-2-2zM5 7h2v2H5V7zm14 2h-2V7h2v2z" /></svg>`;
 
@@ -233,7 +246,7 @@
 
         // DİĞER TAKIMLARIN SAYFALAMA MANTIĞI
         const otherEntries = allEntries.slice(1);
-        const rowsToShow = itemsPerPage - 1; // 9 satır
+        const rowsToShow = itemsPerPage - 1; 
         const totalPages = Math.max(1, Math.ceil(otherEntries.length / rowsToShow));
         
         if (currentPage >= totalPages) currentPage = 0;
@@ -243,7 +256,7 @@
         const currentBatch = otherEntries.slice(start, end);
 
         currentBatch.forEach((item, index) => {
-            const realRank = start + index + 2; // +1 dizi kayması, +1 lider
+            const realRank = start + index + 2; 
             html += `<tr class="fade-in"><td>${realRank}</td><td style="text-align: left; padding-left: 20px; color:var(--metin);">${item.name}</td><td>${item.time}s</td><td style="color: #ff6b6b">+${item.penalty}s</td><td class="toplam-vurgu">${item.total}s</td></tr>`;
         });
 
@@ -252,7 +265,6 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
-    // SAYFA DEĞİŞTİRME DÖNGÜSÜ
     setInterval(() => {
         const otherEntriesCount = allEntries.length - 1;
         const rowsToShow = itemsPerPage - 1;
