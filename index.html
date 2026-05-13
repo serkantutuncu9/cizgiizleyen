@@ -148,7 +148,7 @@
     </div>
 
     <div class="footer-info">
-        <span id="total-label">Senkronize ediliyor...</span>
+        <span id="total-label">Veriler Alınıyor...</span>
         <span id="page-label">Sayfa 1 / 1</span>
     </div>
 </div>
@@ -157,7 +157,7 @@
     let allEntries = [];
     let currentPage = 0;
     const othersPerPage = 9; 
-    let lastDataHash = ""; // Veri değişikliğini kontrol etmek için
+    let lastDataHash = ""; 
 
     function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleFullScreen() {
@@ -176,8 +176,6 @@
             if (!response.ok) throw new Error("Network Error");
             
             const rawData = await response.text();
-            
-            // Eğer gelen veri boşsa veya bir öncekiyle aynıysa render yapma (Titremeyi önler)
             if (rawData === lastDataHash) return;
             lastDataHash = rawData;
 
@@ -198,7 +196,6 @@
                 }
             }
 
-            // Kararlı Sıralama: Önce Toplam Süre, Sonra İsim
             tempEntries.sort((a, b) => {
                 if (a.total !== b.total) return a.total - b.total;
                 return a.name.localeCompare(b.name);
@@ -208,16 +205,12 @@
             renderTable();
         } catch (err) { 
             console.error("Senkronizasyon Hatası:", err);
-            document.getElementById('total-label').innerText = "Bağlantı Hatası! Yeniden deneniyor...";
         }
     }
 
     function renderTable() {
         const tbody = document.getElementById('display-area');
-        if (allEntries.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="width:100%">Henüz veri bulunamadı.</td></tr>';
-            return;
-        }
+        if (allEntries.length === 0) return;
 
         const leader = allEntries[0];
         let html = `<tr class="row-first sticky-leader">
@@ -231,7 +224,6 @@
         const others = allEntries.slice(1);
         const totalPages = Math.max(1, Math.ceil(others.length / othersPerPage));
         
-        // Sayfa taşma kontrolü
         if (currentPage >= totalPages) currentPage = 0;
 
         const start = currentPage * othersPerPage;
@@ -252,18 +244,27 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
-    // Sayfa otomatik geçiş döngüsü
+    // DÖNGÜ VE OTOMATİK GÜNCELLEME MANTIĞI
     setInterval(() => {
-        const totalPages = Math.ceil((allEntries.length - 1) / othersPerPage);
+        const othersCount = allEntries.length - 1;
+        const totalPages = Math.ceil(othersCount / othersPerPage);
+        
         if (totalPages > 1) {
-            currentPage = (currentPage + 1) % totalPages;
-            renderTable();
+            // Eğer şu an son sayfadaysak, bir sonraki adımda başa döneceğiz demektir
+            if (currentPage === totalPages - 1) {
+                currentPage = 0;
+                fetchData(); // Başa dönerken verileri tazele (Sayfa yenileme etkisi)
+            } else {
+                currentPage++;
+                renderTable();
+            }
+        } else {
+            // Tek sayfa varsa bile veriyi 15 saniyede bir kontrol et
+            fetchData();
         }
-    }, 15000); // 15 saniyede bir sayfa değiştir
+    }, 15000); 
 
-    // İlk yükleme ve ana döngüler
     fetchData();
-    setInterval(fetchData, 10000); // 10 saniyede bir veriyi tazele
     updateClock();
 </script>
 </body>
