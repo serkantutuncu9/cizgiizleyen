@@ -51,23 +51,24 @@
         .header-left {
             display: flex;
             align-items: center;
-            width: 300px; /* Başlıkla simge arasındaki mesafeyi korumak için */
+            width: 300px;
             gap: 20px;
         }
 
-        /* Ampul ve Tam Ekran İkonlarıyla Tam Uyumlu Stil */
-        .portal-link {
-            text-decoration: none;
+        .portal-btn {
+            background: none;
+            border: none;
             color: var(--beyaz);
-            font-size: 1.2rem; /* Sağdaki ikonlarla aynı boyut */
+            font-size: 1.2rem;
             opacity: 0.8;
             transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 0;
             display: flex;
             align-items: center;
-            cursor: pointer;
         }
 
-        .portal-link:hover {
+        .portal-btn:hover {
             opacity: 1;
             color: var(--altin);
             transform: translateY(-1px);
@@ -161,10 +162,10 @@
 <div class="board-container">
     <div class="header">
         <div class="header-left">
-            <!-- Sağdaki ikonlarla uyumlu yeni şık Home butonu -->
-            <a href="https://serkantutuncu9.github.io/Portal/" class="portal-link">
+            <!-- Tam ekranı bozmadan yönlendiren buton -->
+            <button class="portal-btn" onclick="goToPortal()" title="Portal Ana Sayfa">
                 <i class="fas fa-home"></i>
-            </a>
+            </button>
             <h2>SKOR TABLOSU</h2>
         </div>
         
@@ -177,14 +178,12 @@
             <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
             <div class="clock-controls">
                 <div class="digital-clock" id="live-clock">00:00:00</div>
-                <!-- Sağ taraftaki orijinal butonlar -->
                 <i class="fas fa-lightbulb icon-btn" onclick="toggleTheme()"></i>
                 <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
             </div>
         </div>
     </div>
 
-    <!-- Geri kalan tablo ve script yapısı birebir korunmuştur -->
     <div class="table-container">
         <table>
             <thead>
@@ -207,11 +206,15 @@
 </div>
 
 <script>
-    // Scriptlerin tamamı orijinal haliyle buradadır
     let allEntries = [];
     let currentPage = 0;
     const othersPerPage = 9; 
     let lastDataHash = ""; 
+
+    function goToPortal() {
+        // Mevcut pencere içinde (tam ekran dahil) yönlendirme yapar
+        window.location.href = "https://serkantutuncu9.github.io/Portal/";
+    }
 
     function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleFullScreen() {
