@@ -11,50 +11,42 @@
             --vurgu: #00f2ff;
             --altin: #ffd700;
             --metin: #e0e0e0;
-            --tablo-satir: rgba(128,128,128,0.05);
+            --status-bg: #00ff88;
         }
 
         body.light-theme {
             --ana-renk: #f0f4f8 !important;
             --kart-bg: #ffffff !important;
-            --vurgu: #000080 !important; /* Navy / Lacivert */
+            --vurgu: #000080 !important;
             --metin: #000033 !important;
             --altin: #a67c00 !important;
-            --tablo-satir: rgba(0,0,128,0.06) !important;
+            --status-bg: #000080 !important;
         }
 
-        /* Tüm renk değişimlerine yumuşak geçiş efekti */
-        * { transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease; }
+        * { transition: background-color 0.4s ease, color 0.4s ease; }
 
         body { 
             background-color: var(--ana-renk); 
             margin: 0; padding: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             color: var(--metin);
             height: 100vh;
-            display: flex; flex-direction: column;
             overflow: hidden;
         }
 
-        .board-container { 
-            background: var(--kart-bg); 
-            width: 100vw; height: 100vh;
-            display: flex; flex-direction: column;
-        }
+        .board-container { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
 
         .header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 40px;
-            background: rgba(0,0,0,0.03);
+            background: rgba(0,0,0,0.05);
             border-bottom: 1px solid rgba(128,128,128,0.1);
-            z-index: 101;
+            z-index: 1000;
         }
 
-        /* GERİ GETİRİLEN PARLAMA EFEKTİ */
+        /* Başlık Efekti */
         .header h2 { 
-            margin: 0; 
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            font-weight: 800;
+            margin: 0; font-size: 1.8rem; font-weight: 800;
             background: linear-gradient(90deg, var(--metin) 0%, var(--vurgu) 50%, var(--metin) 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
@@ -64,57 +56,54 @@
 
         @keyframes shine { to { background-position: 200% center; } }
 
-        .digital-clock {
-            font-size: 1.5rem;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            color: var(--vurgu);
+        .status-area {
+            display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
         }
 
-        .table-container {
-            flex-grow: 1; padding: 0 30px;
-            overflow-y: auto;
+        .system-status {
+            font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 8px; color: var(--vurgu);
         }
 
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        .status-dot {
+            height: 8px; width: 8px; background-color: var(--status-bg);
+            border-radius: 50%; box-shadow: 0 0 8px var(--status-bg);
+        }
 
-        /* SABİTLEME: Başlıklar ve Lider */
+        .digital-clock { font-size: 1.5rem; font-family: monospace; font-weight: bold; color: var(--vurgu); }
+
+        .table-container { flex-grow: 1; padding: 0 30px; overflow-y: auto; position: relative; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+
         thead { position: sticky; top: 0; z-index: 100; background: var(--kart-bg); }
         .sticky-leader {
-            position: sticky; top: 45px; z-index: 99;
+            position: sticky; top: 48px; z-index: 99;
             background: var(--kart-bg) !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        tr { display: flex; width: 100%; background: var(--tablo-satir); border-radius: 8px; min-height: 60px; }
+        tr { display: flex; width: 100%; border-radius: 10px; min-height: 60px; background: rgba(128,128,128,0.05); }
+        .light-theme tr { background: rgba(0,0,128,0.04); }
 
-        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: clamp(0.9rem, 2vh, 1.3rem); }
+        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
         th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
-        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 20px; } 
+        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 25px; } 
         th:nth-child(3), td:nth-child(3) { flex: 1; } 
         th:nth-child(4), td:nth-child(4) { flex: 1; } 
-        th:nth-child(5), td:nth-child(5) { flex: 1.2; }
+        th:nth-child(5), td:nth-child(5) { flex: 1.2; font-weight: bold; color: var(--vurgu); }
 
-        .row-first { 
-            background: rgba(255, 215, 0, 0.15) !important; 
-            border: 2px solid var(--altin) !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+        .row-first { background: rgba(255, 215, 0, 0.12) !important; border: 2px solid var(--altin) !important; }
 
-        .toplam-vurgu { color: var(--vurgu); font-weight: bold; }
+        .footer-info { display: flex; justify-content: space-between; padding: 10px 40px; font-size: 0.85rem; background: rgba(0,0,0,0.05); }
 
-        .footer-info {
-            display: flex; justify-content: space-between;
-            padding: 8px 40px; font-size: 0.85rem;
-            background: rgba(0,0,0,0.05);
-            border-top: 1px solid rgba(128,128,128,0.1);
-        }
-
-        .icon-btn { cursor: pointer; color: var(--vurgu); font-size: 1.2rem; margin-left: 15px; }
+        .controls { display: flex; align-items: center; gap: 15px; margin-left: 15px; }
+        .icon-btn { cursor: pointer; color: var(--vurgu); font-size: 1.2rem; }
 
         @media screen and (max-width: 600px) {
             th:nth-child(3), td:nth-child(3) { display: none; }
             .header, .footer-info { padding: 10px 15px; }
-            .sticky-leader { top: 40px; }
+            .sticky-leader { top: 42px; }
         }
     </style>
 </head>
@@ -123,12 +112,15 @@
 <div class="board-container">
     <div class="header">
         <h2>SKOR TABLOSU</h2>
-        <div style="display:flex; align-items:center;">
-            <div style="text-align: right; margin-right: 20px;">
-                <div class="digital-clock" id="live-clock">00:00:00</div>
+        <div class="status-area">
+            <div style="display:flex; align-items:center;">
+                <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
+                <div class="controls">
+                    <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
+                    <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
+                </div>
             </div>
-            <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
-            <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
+            <div class="digital-clock" id="live-clock">00:00:00</div>
         </div>
     </div>
 
@@ -137,7 +129,7 @@
             <thead>
                 <tr>
                     <th>SIRA</th>
-                    <th style="justify-content: flex-start; padding-left: 20px;">TAKIM ADI</th>
+                    <th style="justify-content:flex-start; padding-left:25px;">TAKIM ADI</th>
                     <th>SÜRE</th>
                     <th>CEZA</th>
                     <th>TOPLAM</th>
@@ -156,7 +148,7 @@
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const itemsPerPage = 9; // Lider hariç 9 takım (Toplam 10 satır için)
+    const othersPerPage = 9; // Lider (1) + Diğerleri (9) = Toplam 10
 
     function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleFullScreen() {
@@ -191,34 +183,36 @@
             tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
             renderTable();
-        } catch (err) { console.error("Veri hatası"); }
+        } catch (err) { console.error("Sync Error"); }
     }
 
     function renderTable() {
         const tbody = document.getElementById('display-area');
         if (allEntries.length === 0) return;
 
+        // 1. Sabit Lider
         const leader = allEntries[0];
         let html = `<tr class="row-first sticky-leader">
-            <td><i class="fas fa-trophy" style="color:var(--altin); font-size:1.5rem;"></i></td>
+            <td><i class="fas fa-trophy" style="color:var(--altin)"></i></td>
             <td>${leader.name}</td><td>${leader.time}s</td>
             <td style="color:#ff4d4d">+${leader.penalty}s</td>
-            <td class="toplam-vurgu">${leader.total}s</td>
+            <td>${leader.total}s</td>
         </tr>`;
 
+        // Sayfalama (Lider hariç)
         const others = allEntries.slice(1);
-        const totalPages = Math.max(1, Math.ceil(others.length / itemsPerPage));
+        const totalPages = Math.max(1, Math.ceil(others.length / othersPerPage));
         if (currentPage >= totalPages) currentPage = 0;
 
-        const start = currentPage * itemsPerPage;
-        const currentBatch = others.slice(start, start + itemsPerPage);
+        const start = currentPage * othersPerPage;
+        const currentBatch = others.slice(start, start + othersPerPage);
 
         currentBatch.forEach((item, index) => {
             html += `<tr>
                 <td>${start + index + 2}</td>
                 <td>${item.name}</td><td>${item.time}s</td>
                 <td style="color:#ff4d4d">+${item.penalty}s</td>
-                <td class="toplam-vurgu">${item.total}s</td>
+                <td>${item.total}s</td>
             </tr>`;
         });
 
@@ -228,7 +222,7 @@
     }
 
     setInterval(() => {
-        const totalPages = Math.ceil((allEntries.length - 1) / itemsPerPage);
+        const totalPages = Math.ceil((allEntries.length - 1) / othersPerPage);
         if (totalPages > 1) {
             currentPage = (currentPage + 1) % totalPages;
             renderTable();
