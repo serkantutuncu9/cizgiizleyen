@@ -14,14 +14,14 @@
             --border-rgba: rgba(255,255,255,0.1);
         }
 
-        /* AYDINLIK MOD - LACİVERT (NAVY) PALETİ */
+        /* AYDINLIK MOD - KESİN LACİVERT (NAVY) AYARLARI */
         .light-theme {
-            --ana-renk: #e6e9ef;
-            --kart-bg: #ffffff;
-            --vurgu: #000080; /* Navy / Lacivert */
-            --altin: #b8860b;
-            --metin: #1a1a2e;
-            --border-rgba: rgba(0,0,128,0.15);
+            --ana-renk: #eef1f6 !important;
+            --kart-bg: #ffffff !important;
+            --vurgu: #000080 !important; /* Saf Lacivert */
+            --altin: #8b6508 !important;
+            --metin: #000033 !important; /* Çok koyu lacivert metin */
+            --border-rgba: rgba(0,0,128,0.2) !important;
         }
 
         body { 
@@ -34,7 +34,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
         }
 
         .board-container { 
@@ -54,13 +54,20 @@
             padding: 10px 40px;
             flex-shrink: 0;
             border-bottom: 2px solid var(--border-rgba);
-            background: rgba(0,0,0,0.02);
+            background: rgba(0,0,0,0.03);
             z-index: 10;
+        }
+
+        /* Başlık rengi aydınlık modda lacivert olsun */
+        .light-theme .header h2 {
+            background: none !important;
+            -webkit-text-fill-color: var(--vurgu) !important;
+            color: var(--vurgu) !important;
         }
 
         .header h2 { 
             margin: 0; 
-            background: linear-gradient(90deg, var(--metin) 0%, var(--vurgu) 50%, var(--metin) 100%);
+            background: linear-gradient(90deg, #ffffff 0%, var(--vurgu) 50%, #ffffff 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -89,7 +96,6 @@
 
         table { 
             width: 100%; 
-            height: auto;
             min-height: 100%; 
             display: flex;
             flex-direction: column;
@@ -98,7 +104,6 @@
         thead { 
             display: block; 
             width: 100%; 
-            flex-shrink: 0;
             margin-bottom: 10px;
             position: sticky;
             top: 0;
@@ -120,12 +125,11 @@
             background: rgba(128,128,128,0.05);
             border-radius: 10px;
             min-height: 60px;
-            transition: background 0.2s;
         }
 
         .light-theme tr {
-            background: rgba(0,0,128,0.03);
-            border: 1px solid rgba(0,0,128,0.05);
+            background: rgba(0,0,128,0.04) !important;
+            border: 1px solid rgba(0,0,128,0.1) !important;
         }
 
         th, td { 
@@ -138,14 +142,14 @@
         }
 
         th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
-        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: clamp(10px, 4vw, 40px); } 
+        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: clamp(15px, 4vw, 40px); } 
         th:nth-child(3), td:nth-child(3) { flex: 1; } 
         th:nth-child(4), td:nth-child(4) { flex: 1; } 
         th:nth-child(5), td:nth-child(5) { flex: 1.2; }
 
         .row-first { 
             background: rgba(255, 215, 0, 0.12) !important; 
-            border: 2px solid rgba(255, 215, 0, 0.4);
+            border: 2px solid rgba(255, 215, 0, 0.4) !important;
         }
 
         .toplam-vurgu { color: var(--vurgu); font-weight: bold; }
@@ -162,7 +166,7 @@
         }
 
         .status-dot { height: 8px; width: 8px; background-color: #00ff88; border-radius: 50%; display: inline-block; margin-right: 8px; }
-        .light-theme .status-dot { background-color: #008000; box-shadow: 0 0 5px #008000; }
+        .light-theme .status-dot { background-color: #000080 !important; box-shadow: 0 0 5px rgba(0,0,128,0.5); }
         
         .icon-btn {
             cursor: pointer;
@@ -174,7 +178,6 @@
         .icon-btn:hover { transform: scale(1.1); opacity: 1; }
 
         @media screen and (max-width: 600px) {
-            .table-container { padding: 5px 10px; }
             tbody { grid-template-rows: repeat(10, auto); }
             tr { min-height: 50px; }
             th:nth-child(3), td:nth-child(3) { display: none; }
@@ -187,7 +190,7 @@
 
 <div class="board-container" id="mainBoard">
     <div class="header">
-        <h2>SKOR TABLOSU</h2>
+        <h2 id="main-title">SKOR TABLOSU</h2>
         <div style="text-align: right;">
             <div style="display:flex; align-items:center; gap:15px; justify-content: flex-end; margin-bottom: 5px;">
                 <span style="font-size:0.65rem; color:var(--vurgu); letter-spacing:1px; font-weight: bold;">
@@ -203,9 +206,9 @@
     <div class="table-container">
         <table>
             <thead>
-                <tr style="background:transparent;">
+                <tr style="background:transparent; border:none;">
                     <th>SIRA</th>
-                    <th style="justify-content: flex-start; padding-left: clamp(10px, 4vw, 40px);">TAKIM ADI</th>
+                    <th style="justify-content: flex-start; padding-left: clamp(15px, 4vw, 40px);">TAKIM ADI</th>
                     <th>SÜRE</th>
                     <th>CEZA</th>
                     <th>TOPLAM</th>
@@ -227,9 +230,10 @@
     let currentPage = 0;
     const itemsPerPage = 10; 
     
-    const trophySvg = `<svg class="trophy-icon" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1c1.88-.31 3.41-1.74 3.61-3.61C19.08 11.63 21 9.55 21 7V6c0-1.1-.9-2-2-2zM5 7h2v2H5V7zm14 2h-2V7h2v2z" /></svg>`;
+    function toggleTheme() { 
+        document.body.classList.toggle('light-theme'); 
+    }
 
-    function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleFullScreen() {
         if (!document.fullscreenElement) document.documentElement.requestFullscreen();
         else if (document.exitFullscreen) document.exitFullscreen();
@@ -268,6 +272,8 @@
     function renderTable() {
         const tbody = document.getElementById('display-area');
         if (allEntries.length === 0) return;
+
+        const trophySvg = `<svg class="trophy-icon" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1c1.88-.31 3.41-1.74 3.61-3.61C19.08 11.63 21 9.55 21 7V6c0-1.1-.9-2-2-2zM5 7h2v2H5V7zm14 2h-2V7h2v2z" /></svg>`;
 
         const leader = allEntries[0];
         let html = `<tr class="row-first"><td>${trophySvg}</td><td>${leader.name}</td><td>${leader.time}s</td><td style="color: #ff4d4d">+${leader.penalty}s</td><td class="toplam-vurgu">${leader.total}s</td></tr>`;
