@@ -29,12 +29,11 @@
             padding: 0;
             font-family: 'Segoe UI', system-ui, sans-serif;
             color: var(--metin);
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.3s;
         }
 
         .board-container { 
@@ -44,6 +43,7 @@
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
+            overflow: hidden; /* Dış çerçeve sabit */
         }
 
         .header {
@@ -53,6 +53,8 @@
             padding: 10px 40px;
             flex-shrink: 0;
             border-bottom: 1px solid rgba(128,128,128,0.1);
+            background: rgba(0,0,0,0.1);
+            z-index: 10;
         }
 
         .header h2 { 
@@ -61,30 +63,35 @@
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 1.8rem;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
             animation: shine 5s linear infinite;
         }
 
         @keyframes shine { to { background-position: 200% center; } }
 
         .digital-clock {
-            font-size: 1.6rem;
+            font-size: clamp(1rem, 2.5vw, 1.6rem);
             font-family: 'Courier New', monospace;
             font-weight: bold;
             color: var(--vurgu);
         }
 
+        /* KAYDIRMA ÖZELLİĞİ EKLENEN ALAN */
         .table-container {
             flex-grow: 1;
-            display: flex;
-            flex-direction: column;
             padding: 10px 30px;
-            overflow: hidden;
+            overflow-y: auto; /* Dikey kaydırmayı açtık */
+            -webkit-overflow-scrolling: touch; /* iOS için yumuşak kaydırma */
         }
+
+        /* Scrollbar'ı daha modern ve ince yapalım */
+        .table-container::-webkit-scrollbar { width: 6px; }
+        .table-container::-webkit-scrollbar-thumb { background: var(--vurgu); border-radius: 10px; }
 
         table { 
             width: 100%; 
-            height: 100%;
+            height: auto;
+            min-height: 100%; /* İçerik az olsa da tam yüksekliği kapla */
             display: flex;
             flex-direction: column;
         }
@@ -94,12 +101,15 @@
             width: 100%; 
             flex-shrink: 0;
             margin-bottom: 10px;
+            position: sticky; /* Mobilde başlık kaymasın */
+            top: 0;
+            background: var(--kart-bg);
+            z-index: 5;
         }
 
         tbody { 
-            flex-grow: 1; 
             display: grid;
-            grid-template-rows: repeat(10, 1fr); /* 10 SATIR SABİT */
+            grid-template-rows: repeat(10, minmax(60px, 1fr)); /* Satırların çok daralmasını önledik */
             gap: 8px;
             width: 100%;
         }
@@ -110,6 +120,7 @@
             width: 100%;
             background: rgba(128,128,128,0.05);
             border-radius: 10px;
+            min-height: 60px; /* Mobilde parmakla basmak için ideal yükseklik */
         }
 
         th, td { 
@@ -118,11 +129,11 @@
             display: flex; 
             align-items: center; 
             justify-content: center;
-            font-size: clamp(1rem, 2.2vh, 1.4rem);
+            font-size: clamp(0.85rem, 2vh, 1.3rem);
         }
 
         th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
-        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 40px; } 
+        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: clamp(10px, 4vw, 40px); } 
         th:nth-child(3), td:nth-child(3) { flex: 1; } 
         th:nth-child(4), td:nth-child(4) { flex: 1; } 
         th:nth-child(5), td:nth-child(5) { flex: 1.2; }
@@ -133,30 +144,35 @@
         }
 
         .toplam-vurgu { color: var(--vurgu); font-weight: bold; }
-        .trophy-icon { width: 28px; height: 28px; fill: var(--altin); }
+        .trophy-icon { width: 24px; height: 24px; fill: var(--altin); }
 
         .footer-info {
             display: flex;
             justify-content: space-between;
             padding: 10px 40px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             background: rgba(0,0,0,0.2);
             flex-shrink: 0;
         }
 
         .status-dot { height: 8px; width: 8px; background-color: #00ff88; border-radius: 50%; display: inline-block; margin-right: 8px; }
         
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .icon-btn {
             cursor: pointer;
             color: var(--vurgu);
-            font-size: 1.3rem;
-            transition: 0.2s;
+            font-size: 1.2rem;
             opacity: 0.8;
         }
-        .icon-btn:hover { opacity: 1; transform: scale(1.1); }
+
+        /* MOBİL ÖZEL AYARLAR */
+        @media screen and (max-width: 600px) {
+            .table-container { padding: 5px 10px; }
+            tbody { grid-template-rows: repeat(10, auto); } /* Mobilde otomatik yükseklik */
+            tr { min-height: 50px; }
+            th:nth-child(3), td:nth-child(3) { display: none; } /* Yer kazanmak için süreyi gizle */
+            .header { padding: 10px 15px; }
+            .footer-info { padding: 10px 15px; }
+        }
     </style>
 </head>
 <body>
@@ -165,8 +181,8 @@
     <div class="header">
         <h2>SKOR TABLOSU</h2>
         <div style="text-align: right;">
-            <div style="display:flex; align-items:center; gap:20px; justify-content: flex-end; margin-bottom: 5px;">
-                <span style="font-size:0.75rem; color:var(--vurgu); letter-spacing:1px;">
+            <div style="display:flex; align-items:center; gap:15px; justify-content: flex-end; margin-bottom: 5px;">
+                <span style="font-size:0.65rem; color:var(--vurgu); letter-spacing:1px; font-weight: bold;">
                     <span class="status-dot"></span> SİSTEM AKTİF
                 </span>
                 <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
@@ -181,13 +197,14 @@
             <thead>
                 <tr style="background:transparent;">
                     <th>SIRA</th>
-                    <th style="justify-content: flex-start; padding-left: 40px;">TAKIM ADI</th>
+                    <th style="justify-content: flex-start; padding-left: clamp(10px, 4vw, 40px);">TAKIM ADI</th>
                     <th>SÜRE</th>
                     <th>CEZA</th>
                     <th>TOPLAM</th>
                 </tr>
             </thead>
             <tbody id="display-area">
+                <!-- Veriler buraya yüklenecek -->
             </tbody>
         </table>
     </div>
@@ -246,7 +263,7 @@
         if (allEntries.length === 0) return;
 
         const leader = allEntries[0];
-        let html = `<tr class="row-first fade-in"><td>${trophySvg}</td><td>${leader.name}</td><td>${leader.time}s</td><td style="color: #ff6b6b">+${leader.penalty}s</td><td class="toplam-vurgu">${leader.total}s</td></tr>`;
+        let html = `<tr class="row-first"><td>${trophySvg}</td><td>${leader.name}</td><td>${leader.time}s</td><td style="color: #ff6b6b">+${leader.penalty}s</td><td class="toplam-vurgu">${leader.total}s</td></tr>`;
 
         const otherEntries = allEntries.slice(1);
         const rowsToShow = itemsPerPage - 1; 
@@ -257,7 +274,7 @@
         const currentBatch = otherEntries.slice(start, start + rowsToShow);
 
         currentBatch.forEach((item, index) => {
-            html += `<tr class="fade-in"><td>${start + index + 2}</td><td>${item.name}</td><td>${item.time}s</td><td style="color: #ff6b6b">+${item.penalty}s</td><td class="toplam-vurgu">${item.total}s</td></tr>`;
+            html += `<tr><td>${start + index + 2}</td><td>${item.name}</td><td>${item.time}s</td><td style="color: #ff6b6b">+${item.penalty}s</td><td class="toplam-vurgu">${item.total}s</td></tr>`;
         });
 
         tbody.innerHTML = html;
