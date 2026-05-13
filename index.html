@@ -11,15 +11,22 @@
             --vurgu: #00f2ff;
             --altin: #ffd700;
             --metin: #e0e0e0;
+            --tablo-satir: rgba(128,128,128,0.05);
         }
 
-        /* AYDINLIK MOD - LACİVERT (NAVY) GARANTİ AYARLAR */
+        /* AYDINLIK MOD - GEÇİŞ EFEKTİ VE LACİVERT TONLAR */
         body.light-theme {
             --ana-renk: #f0f4f8 !important;
             --kart-bg: #ffffff !important;
-            --vurgu: #000080 !important; /* Lacivert */
+            --vurgu: #000080 !important; /* Navy / Lacivert */
             --metin: #000033 !important;
             --altin: #a67c00 !important;
+            --tablo-satir: rgba(0,0,128,0.06) !important;
+        }
+
+        /* Tüm renk değişimlerine 0.5 saniyelik yumuşak geçiş ekledik */
+        * {
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
         }
 
         body { 
@@ -47,17 +54,18 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 40px;
-            background: rgba(0,0,0,0.05);
+            background: rgba(0,0,0,0.03);
             border-bottom: 1px solid rgba(128,128,128,0.1);
+            z-index: 101; /* Her şeyin üstünde */
         }
 
         .header h2 { 
             margin: 0; 
             font-size: 1.6rem;
             color: var(--vurgu);
+            font-weight: 800;
+            letter-spacing: 1px;
         }
-
-        .light-theme .header h2 { color: #000080 !important; }
 
         .digital-clock {
             font-size: 1.5rem;
@@ -66,11 +74,12 @@
             color: var(--vurgu);
         }
 
+        /* TABLO VE SABİTLEME AYARLARI */
         .table-container {
             flex-grow: 1;
             padding: 0 30px;
             overflow-y: auto;
-            position: relative;
+            -webkit-overflow-scrolling: touch;
         }
 
         table { 
@@ -79,7 +88,7 @@
             border-spacing: 0 8px;
         }
 
-        /* BAŞLIK VE LİDER SABİTLEME */
+        /* Sütun Başlıklarını Sabitle */
         thead {
             position: sticky;
             top: 0;
@@ -87,24 +96,21 @@
             background: var(--kart-bg);
         }
 
-        /* Lider satırını sabitlemek için özel ID kullanacağız JS tarafında */
+        /* Lider (1.) Satırı Sabitle */
         .sticky-leader {
             position: sticky;
-            top: 45px; /* Sütun başlıklarının hemen altında dursun */
-            z-index: 90;
-            background: var(--kart-bg);
+            top: 45px; /* thead yüksekliğine göre ayarlandı */
+            z-index: 99;
+            background: var(--kart-bg) !important;
         }
 
         tr { 
             display: flex; 
             width: 100%;
-            background: rgba(128,128,128,0.05);
+            background: var(--tablo-satir);
             border-radius: 8px;
-            margin-bottom: 8px;
             min-height: 60px;
         }
-
-        .light-theme tr { background: rgba(0,0,128,0.05); }
 
         th, td { 
             flex: 1; 
@@ -123,28 +129,37 @@
         .row-first { 
             background: rgba(255, 215, 0, 0.15) !important; 
             border: 2px solid var(--altin) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .toplam-vurgu { color: var(--vurgu); font-weight: bold; }
-        .light-theme .toplam-vurgu { color: #000080 !important; }
 
         .footer-info {
             display: flex;
             justify-content: space-between;
             padding: 8px 40px;
             font-size: 0.85rem;
-            background: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.05);
+            border-top: 1px solid rgba(128,128,128,0.1);
         }
 
-        .icon-btn { cursor: pointer; color: var(--vurgu); font-size: 1.2rem; margin-left: 15px; }
+        .icon-btn { 
+            cursor: pointer; 
+            color: var(--vurgu); 
+            font-size: 1.2rem; 
+            margin-left: 15px;
+            transition: transform 0.2s ease;
+        }
+        .icon-btn:hover { transform: scale(1.2); }
 
         @media screen and (max-width: 600px) {
             th:nth-child(3), td:nth-child(3) { display: none; }
             .header, .footer-info { padding: 10px 15px; }
+            .sticky-leader { top: 40px; }
         }
     </style>
 </head>
-<body class="dark-theme"> <!-- Varsayılan dark -->
+<body>
 
 <div class="board-container">
     <div class="header">
@@ -153,8 +168,8 @@
             <div style="text-align: right; margin-right: 20px;">
                 <div class="digital-clock" id="live-clock">00:00:00</div>
             </div>
-            <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
-            <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
+            <i class="fas fa-adjust icon-btn" title="Tema Değiştir" onclick="toggleTheme()"></i>
+            <i class="fas fa-expand icon-btn" title="Tam Ekran" onclick="toggleFullScreen()"></i>
         </div>
     </div>
 
@@ -170,13 +185,13 @@
                 </tr>
             </thead>
             <tbody id="display-area">
-                <!-- Veriler buraya gelecek -->
+                <!-- Veriler Dinamik Olarak Buraya Gelecek -->
             </tbody>
         </table>
     </div>
 
     <div class="footer-info">
-        <span id="total-label">Yükleniyor...</span>
+        <span id="total-label">Veriler Alınıyor...</span>
         <span id="page-label">Sayfa 1 / 1</span>
     </div>
 </div>
@@ -184,15 +199,23 @@
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const itemsPerPage = 11; // 1 lider + 10 normal satır
+    const itemsPerPage = 10; 
 
-    function toggleTheme() { document.body.classList.toggle('light-theme'); }
+    function toggleTheme() { 
+        document.body.classList.toggle('light-theme'); 
+    }
+
     function toggleFullScreen() {
-        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-        else document.exitFullscreen();
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
     }
     
-    function updateClock() { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); }
+    function updateClock() { 
+        document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); 
+    }
     setInterval(updateClock, 1000);
 
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
@@ -206,12 +229,12 @@
             let tempEntries = [];
             for (let i = 1; i < rows.length; i++) {
                 const cols = rows[i].split(separator);
-                if (cols[1] && cols[1].trim() !== "") {
-                    let totalVal = parseFloat(cols[4]?.replace(',', '.'));
+                if (cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
+                    let totalVal = parseFloat(cols[4]?.replace(/"/g, '').replace(',', '.'));
                     tempEntries.push({
-                        name: cols[1].trim(),
-                        time: cols[2]?.trim() || '0',
-                        penalty: cols[3]?.trim() || '0',
+                        name: cols[1].replace(/"/g, '').trim(),
+                        time: cols[2]?.replace(/"/g, '').trim() || '0',
+                        penalty: cols[3]?.replace(/"/g, '').trim() || '0',
                         total: isNaN(totalVal) ? 999 : totalVal
                     });
                 }
@@ -219,31 +242,30 @@
             tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
             renderTable();
-        } catch (err) { console.error("Veri hatası"); }
+        } catch (err) { console.error("Veri çekme hatası oluştu."); }
     }
 
     function renderTable() {
         const tbody = document.getElementById('display-area');
         if (allEntries.length === 0) return;
 
-        // 1. SIRADAKİ TAKIM (SABİT)
+        // 1. SIRADAKİ TAKIM (STICKY LİDER)
         const leader = allEntries[0];
         let html = `<tr class="row-first sticky-leader">
-            <td><i class="fas fa-trophy" style="color:var(--altin)"></i></td>
+            <td><i class="fas fa-trophy" style="color:var(--altin); font-size:1.5rem;"></i></td>
             <td>${leader.name}</td>
             <td>${leader.time}s</td>
             <td style="color:#ff4d4d">+${leader.penalty}s</td>
             <td class="toplam-vurgu">${leader.total}s</td>
         </tr>`;
 
-        // DİĞER TAKIMLAR
+        // DİĞER TAKIMLAR (Sayfalamalı)
         const otherEntries = allEntries.slice(1);
-        const rowsToShow = 10;
-        const totalPages = Math.max(1, Math.ceil(otherEntries.length / rowsToShow));
+        const totalPages = Math.max(1, Math.ceil(otherEntries.length / itemsPerPage));
         
         if (currentPage >= totalPages) currentPage = 0;
-        const start = currentPage * rowsToShow;
-        const currentBatch = otherEntries.slice(start, start + rowsToShow);
+        const start = currentPage * itemsPerPage;
+        const currentBatch = otherEntries.slice(start, start + itemsPerPage);
 
         currentBatch.forEach((item, index) => {
             html += `<tr>
@@ -257,17 +279,19 @@
 
         tbody.innerHTML = html;
         document.getElementById('page-label').innerText = `Sayfa ${currentPage + 1} / ${totalPages}`;
-        document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
+        document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım Kayıtlı`;
     }
 
+    // Sayfa otomatik geçişi (Her 15 saniyede bir)
     setInterval(() => {
-        const totalPages = Math.ceil((allEntries.length - 1) / 10);
+        const totalPages = Math.ceil((allEntries.length - 1) / itemsPerPage);
         if (totalPages > 1) {
             currentPage = (currentPage + 1) % totalPages;
             renderTable();
         }
     }, 15000);
 
+    // Veri güncelleme (Her 10 saniyede bir)
     fetchData();
     setInterval(fetchData, 10000);
     updateClock();
