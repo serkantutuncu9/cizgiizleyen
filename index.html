@@ -13,7 +13,8 @@
             --metin: #e0e0e0;
             --beyaz: #ffffff;
             --status-color: #00ff88;
-            --gradient-text: linear-gradient(90deg, #e0e0e0 0%, #00f2ff 50%, #e0e0e0 100%);
+            --gold-gradient: linear-gradient(90deg, #d4af37 0%, #ffd700 50%, #d4af37 100%);
+            --header-gradient: linear-gradient(90deg, #e0e0e0 0%, #00f2ff 50%, #e0e0e0 100%);
         }
 
         body.light-theme {
@@ -24,7 +25,7 @@
             --altin: #a67c00 !important;
             --beyaz: #000033 !important;
             --status-color: #000080 !important;
-            --gradient-text: linear-gradient(90deg, #000033 0%, #000080 50%, #000033 100%) !important;
+            --header-gradient: linear-gradient(90deg, #000033 0%, #000080 50%, #000033 100%) !important;
         }
 
         * { transition: background-color 0.4s ease, color 0.4s ease; box-sizing: border-box; }
@@ -48,72 +49,70 @@
         }
 
         .header h2 { 
-            margin: 0; font-size: 2rem; font-weight: 900;
-            background: var(--gradient-text);
+            margin: 0; font-size: 1.8rem; font-weight: 900;
+            background: var(--header-gradient);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: shine 4s linear infinite;
         }
 
+        /* YENİ PROJE BAŞLIK ALANI */
+        .project-center-title {
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .main-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: var(--gold-gradient);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+            text-transform: uppercase;
+        }
+
+        .sub-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #c5a059;
+            letter-spacing: 1px;
+        }
+
         @keyframes shine { to { background-position: 200% center; } }
 
-        .status-block { display: flex; flex-direction: column; align-items: flex-end; }
-
-        .system-status {
-            font-size: 0.8rem; font-weight: 800; letter-spacing: 1px;
-            display: flex; align-items: center; gap: 6px; color: var(--beyaz);
-            margin-bottom: 4px;
-        }
-
-        .status-dot {
-            height: 10px; width: 10px; background-color: var(--status-color);
-            border-radius: 50%; animation: pulse-glow 1.5s infinite;
-        }
-
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
-        }
+        .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 220px; }
+        .system-status { font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 6px; color: var(--beyaz); margin-bottom: 4px; }
+        .status-dot { height: 10px; width: 10px; background-color: var(--status-color); border-radius: 50%; animation: pulse-glow 1.5s infinite; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
 
         .clock-controls { display: flex; align-items: center; gap: 15px; }
         .digital-clock { font-size: 1.8rem; font-family: monospace; font-weight: bold; color: var(--beyaz); }
-
         .icon-btn { cursor: pointer; color: var(--beyaz); font-size: 1.2rem; opacity: 0.8; }
 
         .table-container { flex-grow: 1; padding: 10px 30px; overflow-y: auto; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
-
         thead { position: sticky; top: 0; z-index: 100; background: var(--ana-renk); }
-        
         tr { display: flex; width: 100%; border-radius: 12px; min-height: 65px; background: rgba(128,128,128,0.08); }
-
-        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; padding: 10px; }
+        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; padding: 10px; }
         th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
         th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 25px; font-weight: 600; } 
-        th:nth-child(3), td:nth-child(3) { flex: 1; } 
-        th:nth-child(4), td:nth-child(4) { flex: 1; } 
         th:nth-child(5), td:nth-child(5) { flex: 1.2; font-weight: 800; color: var(--vurgu); }
 
         .row-first { border: 2.5px solid var(--altin) !important; background: rgba(255, 215, 0, 0.12) !important; }
         .sticky-leader { position: sticky; top: 55px; z-index: 99; background: var(--kart-bg) !important; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-
         .footer-info { display: flex; justify-content: space-between; padding: 12px 40px; font-size: 0.9rem; background: rgba(0,0,0,0.15); font-weight: bold; }
 
-        @media screen and (max-width: 768px) {
-            .header { padding: 12px 15px; }
-            .header h2 { font-size: 1.5rem; }
-            .digital-clock { font-size: 1.4rem; }
-            .table-container { padding: 0 8px; }
-            tr { min-height: 55px; }
-            th, td { font-size: 0.95rem; padding: 6px; }
-            th:nth-child(1), td:nth-child(1) { flex: 0.35; }
-            th:nth-child(2), td:nth-child(2) { flex: 1.8; padding-left: 10px; }
-            th:nth-child(3), td:nth-child(3) { flex: 0.8; }
-            th:nth-child(4), td:nth-child(4) { flex: 0.8; }
-            th:nth-child(5), td:nth-child(5) { flex: 0.9; }
-            .footer-info { padding: 10px 15px; font-size: 0.8rem; }
+        @media screen and (max-width: 1024px) {
+            .main-title { font-size: 1.2rem; }
+            .sub-title { font-size: 0.8rem; }
+            .header h2 { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -121,7 +120,13 @@
 
 <div class="board-container">
     <div class="header">
-        <h2>SKOR TABLOSU</h2>
+        <h2 style="width:220px;">SKOR TABLOSU</h2>
+        
+        <div class="project-center-title">
+            <div class="main-title">TÜRKİYE STEM YARIŞMASI</div>
+            <div class="sub-title">Çizgi İzleyen Yarışması</div>
+        </div>
+
         <div class="status-block">
             <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
             <div class="clock-controls">
@@ -174,7 +179,6 @@
         try {
             const response = await fetch(CSV_URL + '&cb=' + Date.now());
             if (!response.ok) throw new Error("Network Error");
-            
             const rawData = await response.text();
             if (rawData === lastDataHash) return;
             lastDataHash = rawData;
@@ -182,7 +186,6 @@
             const rows = rawData.split(/\r?\n/);
             const separator = rows[0].includes(';') ? ';' : ',';
             let tempEntries = [];
-            
             for (let i = 1; i < rows.length; i++) {
                 const cols = rows[i].split(separator);
                 if (cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
@@ -195,17 +198,10 @@
                     });
                 }
             }
-
-            tempEntries.sort((a, b) => {
-                if (a.total !== b.total) return a.total - b.total;
-                return a.name.localeCompare(b.name);
-            });
-
+            tempEntries.sort((a, b) => a.total !== b.total ? a.total - b.total : a.name.localeCompare(b.name));
             allEntries = tempEntries;
             renderTable();
-        } catch (err) { 
-            console.error("Senkronizasyon Hatası:", err);
-        }
+        } catch (err) { console.error("Sync Error", err); }
     }
 
     function renderTable() {
@@ -223,13 +219,10 @@
 
         const others = allEntries.slice(1);
         const totalPages = Math.max(1, Math.ceil(others.length / othersPerPage));
-        
         if (currentPage >= totalPages) currentPage = 0;
 
         const start = currentPage * othersPerPage;
-        const currentBatch = others.slice(start, start + othersPerPage);
-
-        currentBatch.forEach((item, index) => {
+        others.slice(start, start + othersPerPage).forEach((item, index) => {
             html += `<tr>
                 <td>${start + index + 2}</td>
                 <td>${item.name}</td>
@@ -244,24 +237,12 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
-    // DÖNGÜ VE OTOMATİK GÜNCELLEME MANTIĞI
     setInterval(() => {
-        const othersCount = allEntries.length - 1;
-        const totalPages = Math.ceil(othersCount / othersPerPage);
-        
+        const totalPages = Math.ceil((allEntries.length - 1) / othersPerPage);
         if (totalPages > 1) {
-            // Eğer şu an son sayfadaysak, bir sonraki adımda başa döneceğiz demektir
-            if (currentPage === totalPages - 1) {
-                currentPage = 0;
-                fetchData(); // Başa dönerken verileri tazele (Sayfa yenileme etkisi)
-            } else {
-                currentPage++;
-                renderTable();
-            }
-        } else {
-            // Tek sayfa varsa bile veriyi 15 saniyede bir kontrol et
-            fetchData();
-        }
+            if (currentPage === totalPages - 1) { currentPage = 0; fetchData(); } 
+            else { currentPage++; renderTable(); }
+        } else { fetchData(); }
     }, 15000); 
 
     fetchData();
