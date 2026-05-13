@@ -2,104 +2,246 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yarışma Skorboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Skor Tablosu v6</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #f4f7f6; --text: #333; --card: #ffffff; --accent: #2c3e50; --border: #ddd; }
-        [data-theme="dark"] { --bg: #1a1a1b; --text: #e0e0e0; --card: #2d2d2e; --accent: #d4af37; --border: #444; }
-        
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; transition: 0.3s; }
-        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 20px; }
-        
-        .system-status { display: flex; align-items: center; font-weight: bold; font-size: 14px; letter-spacing: 1px; }
-        .dot { height: 10px; width: 10px; background-color: #2ecc71; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 8px #2ecc71; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } }
+        /* TEMA AYARLARI */
+        body.dark-mode {
+            --bg: #0a0c14;
+            --card: #161925;
+            --text: #e0e0e0;
+            --accent: #00f2ff;
+            --border: #333;
+        }
+        body.light-mode {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #222;
+            --accent: #007bff;
+            --border: #ddd;
+        }
 
-        .control-btn { background: none; border: none; color: var(--text); cursor: pointer; font-size: 20px; padding: 5px; transition: 0.2s; }
-        .control-btn:hover { color: var(--accent); transform: scale(1.1); }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            transition: 0.3s;
+        }
 
-        .table-container { max-width: 1000px; margin: 0 auto; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* GERİ GETİRDİĞİMİZ O EFSANE BAŞLIK EFEKTİ */
+        .title-effect {
+            font-size: 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-block;
+            background: linear-gradient(135deg, var(--text) 25%, var(--accent) 50%, var(--text) 75%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: moveGrad 4s linear infinite;
+        }
+
+        @keyframes moveGrad {
+            to { background-position: 200% center; }
+        }
+
+        /* SİSTEM AKTİF VE NOKTA */
+        .status-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .dot {
+            height: 10px;
+            width: 10px;
+            background-color: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* BUTONLAR - ARKA PLANSIZ SADECE İKON */
+        .btn-group { display: flex; gap: 20px; }
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: 0.2s;
+        }
+        .action-btn:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
         table { width: 100%; border-collapse: collapse; }
-        th { background-color: var(--accent); color: white; padding: 18px; text-align: center; text-transform: uppercase; font-size: 14px; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 16px; text-align: center; }
-        .lider { background: rgba(212, 175, 55, 0.1) !important; font-weight: bold; }
+        th { padding: 12px; text-align: center; border-bottom: 2px solid var(--border); color: #888; }
+        td { padding: 15px; text-align: center; border-bottom: 1px solid var(--border); font-size: 1.1rem; }
+
+        .winner { background: rgba(255, 215, 0, 0.1) !important; font-weight: bold; }
+        .winner td { border-top: 2px solid gold; border-bottom: 2px solid gold; }
+
+        .footer { 
+            margin-top: auto; 
+            padding-top: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            color: #888; 
+        }
+        
+        #clock { 
+            font-weight: bold; 
+            color: var(--accent); 
+            font-size: 1.2rem;
+            border: 1px solid var(--border);
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
-    <div class="header-container">
-        <div class="system-status"><span class="dot"></span> SİSTEM AKTİF</div>
-        <div style="display: flex; gap: 15px;">
-            <button id="theme-toggle" class="control-btn"><i class="fas fa-lightbulb"></i></button>
-            <button id="fullscreen-btn" class="control-btn"><i class="fas fa-expand"></i></button>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1 class="title-effect">Skor Tablosu</h1>
+            <div class="status-box">
+                <span class="dot"></span> SİSTEM AKTİF
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="action-btn" onclick="toggleMode()"><i id="theme-icon" class="fas fa-lightbulb"></i></button>
+            <button class="action-btn" onclick="fullScreen()"><i class="fas fa-expand"></i></button>
         </div>
     </div>
 
-    <div class="table-container">
+    <div style="flex-grow: 1;">
         <table>
             <thead>
                 <tr>
                     <th>SIRA</th>
-                    <th>TAKIM ADI</th>
+                    <th style="text-align: left;">TAKIM ADI</th>
                     <th>SÜRE</th>
                     <th>CEZA</th>
                     <th>TOPLAM</th>
                 </tr>
             </thead>
-            <tbody id="table-body">
-                <tr><td colspan="5">Veriler çekiliyor...</td></tr>
+            <tbody id="tableBody">
+                <tr><td colspan="5">Veriler yükleniyor...</td></tr>
             </tbody>
         </table>
     </div>
 
-    <script>
-        // ÖNEMLİ: Kendi Google Sheets CSV linkini buraya tırnak içine yapıştır
-        const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv";
+    <div class="footer">
+        <div id="pageInfo">Sayfa: 1</div>
+        <div id="clock">00:00:00</div>
+        <div id="totalInfo">Toplam: 0 Takım</div>
+    </div>
+</div>
 
-        async function fetchData() {
-            try {
-                const response = await fetch(sheetUrl + "&cache=" + Date.now());
-                const text = await response.text();
-                const rows = text.split(/\r?\n/).map(row => row.split(/[,;]/)); // Virgül veya noktalı virgül ayrımı
-                
-                let html = "";
-                // Başlık satırını atlayıp (i=1) verileri döngüye alıyoruz
-                for (let i = 1; i < rows.length; i++) {
-                    const cols = rows[i];
-                    if (cols[1] && cols[1].trim() !== "") { // Takım adı boş değilse
-                        const isLeader = i === 1 ? "class='lider'" : "";
-                        html += `<tr ${isLeader}>
-                            <td>${i}</td>
-                            <td style="text-align:left; padding-left:40px;">${cols[1].replace(/"/g, '')}</td>
-                            <td>${cols[2] || '0'}s</td>
-                            <td>+${cols[3] || '0'}s</td>
-                            <td style="font-weight:bold;">${cols[4] || '0'}s</td>
-                        </tr>`;
-                    }
-                }
-                document.getElementById('table-body').innerHTML = html || "<tr><td colspan='5'>Kayıtlı veri bulunamadı.</td></tr>";
-            } catch (error) {
-                document.getElementById('table-body').innerHTML = "<tr><td colspan='5'>Bağlantı hatası! Linki kontrol edin.</td></tr>";
-            }
+<script>
+    let entries = [];
+    let currentPage = 0;
+    const pageSize = 10;
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
+
+    function toggleMode() {
+        const b = document.body;
+        const icon = document.getElementById('theme-icon');
+        if(b.classList.contains('dark-mode')) {
+            b.classList.replace('dark-mode', 'light-mode');
+            icon.classList.replace('fas', 'far');
+        } else {
+            b.classList.replace('light-mode', 'dark-mode');
+            icon.classList.replace('far', 'fas');
         }
+    }
 
-        // Tema ve Tam Ekran İşlemleri
-        const themeBtn = document.getElementById('theme-toggle');
-        themeBtn.addEventListener('click', () => {
-            const isDark = document.body.hasAttribute('data-theme');
-            isDark ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'dark');
-            themeBtn.innerHTML = isDark ? '<i class="fas fa-lightbulb"></i>' : '<i class="far fa-lightbulb"></i>';
+    function fullScreen() {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+    }
+
+    async function getData() {
+        try {
+            const res = await fetch(SHEET_URL + '&t=' + new Date().getTime());
+            const csv = await res.text();
+            const rows = csv.split('\n');
+            let newEntries = [];
+            for(let i=1; i < rows.length; i++) {
+                const cols = rows[i].split(/[,;]/);
+                if(cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
+                    newEntries.push({
+                        name: cols[1].replace(/"/g, '').trim(),
+                        time: cols[2] || '0',
+                        penalty: cols[3] || '0',
+                        total: parseFloat(cols[4] ? cols[4].replace(',', '.') : 999)
+                    });
+                }
+            }
+            newEntries.sort((a, b) => a.total - b.total);
+            entries = newEntries;
+            render();
+        } catch (e) { console.error("Hata:", e); }
+    }
+
+    function render() {
+        const tbody = document.getElementById('tableBody');
+        if(entries.length === 0) return;
+        const maxPage = Math.ceil((entries.length - 1) / (pageSize - 1)) || 1;
+        if(currentPage >= maxPage) currentPage = 0;
+
+        let html = `<tr class="winner"><td>🏆 1</td><td style="text-align: left;">${entries[0].name}</td><td>${entries[0].time}s</td><td style="color: red;">+${entries[0].penalty}s</td><td style="color: var(--accent);">${entries[0].total}s</td></tr>`;
+        
+        const start = currentPage * (pageSize - 1) + 1;
+        const pageItems = entries.slice(start, start + (pageSize - 1));
+        pageItems.forEach((item, index) => {
+            html += `<tr><td>${start + index + 1}</td><td style="text-align: left;">${item.name}</td><td>${item.time}s</td><td style="color: red;">+${item.penalty}s</td><td style="font-weight: bold;">${item.total}s</td></tr>`;
         });
+        tbody.innerHTML = html;
+        document.getElementById('pageInfo').innerText = `Sayfa: ${currentPage + 1} / ${maxPage}`;
+        document.getElementById('totalInfo').innerText = `Toplam: ${entries.length} Takım`;
+    }
 
-        document.getElementById('fullscreen-btn').addEventListener('click', () => {
-            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-            else document.exitFullscreen();
-        });
-
-        fetchData();
-        setInterval(fetchData, 20000); // 20 saniyede bir güncelle
-    </script>
+    setInterval(getData, 15000);
+    setInterval(() => { if(entries.length > pageSize) { currentPage++; render(); } }, 10000);
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR'); }, 1000);
+    getData();
+</script>
 </body>
 </html>
