@@ -11,7 +11,7 @@
             --vurgu: #00f2ff;
             --altin: #ffd700;
             --metin: #e0e0e0;
-            --beyaz-vurgu: #ffffff; /* Yeni beyaz vurgu rengimiz */
+            --beyaz: #ffffff;
             --status-color: #00ff88;
         }
 
@@ -21,11 +21,11 @@
             --vurgu: #000080 !important;
             --metin: #000033 !important;
             --altin: #a67c00 !important;
-            --beyaz-vurgu: #000033 !important; /* Aydınlık modda beyaz yerine koyu lacivert/siyah */
+            --beyaz: #000033 !important;
             --status-color: #000080 !important;
         }
 
-        * { transition: background-color 0.4s ease, color 0.4s ease; }
+        * { transition: background-color 0.4s ease, color 0.4s ease; box-sizing: border-box; }
 
         body { 
             background-color: var(--ana-renk); 
@@ -40,15 +40,13 @@
 
         .header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 40px;
-            background: rgba(0,0,0,0.05);
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.2);
             border-bottom: 1px solid rgba(128,128,128,0.1);
-            z-index: 1000;
         }
 
-        /* Başlık parlama efekti hala turkuaz tonlarında kalarak teknolojik havayı koruyor */
         .header h2 { 
-            margin: 0; font-size: 1.8rem; font-weight: 800;
+            margin: 0; font-size: 1.4rem; font-weight: 800;
             background: linear-gradient(90deg, var(--metin) 0%, var(--vurgu) 50%, var(--metin) 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
@@ -58,66 +56,59 @@
 
         @keyframes shine { to { background-position: 200% center; } }
 
-        .status-block { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+        .status-block { display: flex; flex-direction: column; align-items: flex-end; }
 
-        /* Sistem Aktif artık Beyaz */
         .system-status {
-            font-size: 0.65rem; font-weight: 800; letter-spacing: 1px;
-            display: flex; align-items: center; gap: 6px; 
-            color: var(--beyaz-vurgu);
-            margin-bottom: 2px;
+            font-size: 0.6rem; font-weight: 800; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 5px; color: var(--beyaz);
+            margin-bottom: 5px;
         }
 
         .status-dot {
-            height: 7px; width: 7px; background-color: var(--status-color);
-            border-radius: 50%; 
-            animation: pulse-glow 1.5s infinite;
+            height: 6px; width: 6px; background-color: var(--status-color);
+            border-radius: 50%; animation: pulse-glow 1.5s infinite;
         }
 
         @keyframes pulse-glow {
             0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            70% { box-shadow: 0 0 0 8px rgba(0, 255, 136, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
         }
 
-        .clock-controls { display: flex; align-items: center; gap: 15px; }
+        .clock-controls { display: flex; align-items: center; gap: 10px; }
+        .digital-clock { font-size: 1.3rem; font-family: monospace; font-weight: bold; color: var(--beyaz); }
 
-        /* Saat artık Beyaz */
-        .digital-clock { 
-            font-size: 1.6rem; font-family: monospace; font-weight: bold; 
-            color: var(--beyaz-vurgu); 
-        }
+        .icon-btn { cursor: pointer; color: var(--beyaz); font-size: 0.85rem; opacity: 0.7; }
 
-        /* İkonlar artık Beyaz ve Küçük */
-        .icon-btn { cursor: pointer; color: var(--beyaz-vurgu); font-size: 0.95rem; opacity: 0.7; }
-        .icon-btn:hover { opacity: 1; transform: scale(1.1); }
+        .table-container { flex-grow: 1; padding: 0 10px; overflow-y: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
 
-        .table-container { flex-grow: 1; padding: 0 30px; overflow-y: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-
-        thead { position: sticky; top: 0; z-index: 100; background: var(--kart-bg); }
+        thead { position: sticky; top: 0; z-index: 100; background: var(--ana-renk); }
         .sticky-leader {
-            position: sticky; top: 48px; z-index: 99;
+            position: sticky; top: 40px; z-index: 99;
             background: var(--kart-bg) !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
-        tr { display: flex; width: 100%; border-radius: 10px; min-height: 60px; background: rgba(128,128,128,0.05); }
+        tr { display: flex; width: 100%; border-radius: 8px; min-height: 50px; background: rgba(128,128,128,0.05); }
 
-        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-        th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
-        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 25px; } 
-        th:nth-child(3), td:nth-child(3) { flex: 1; } 
-        th:nth-child(4), td:nth-child(4) { flex: 1; } 
-        th:nth-child(5), td:nth-child(5) { flex: 1.2; font-weight: bold; color: var(--vurgu); }
+        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; padding: 5px; text-align: center; }
+        th:nth-child(1), td:nth-child(1) { flex: 0.3; } 
+        th:nth-child(2), td:nth-child(2) { flex: 1.5; justify-content: flex-start; padding-left: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
+        th:nth-child(3), td:nth-child(3) { flex: 0.7; } 
+        th:nth-child(4), td:nth-child(4) { flex: 0.7; } 
+        th:nth-child(5), td:nth-child(5) { flex: 0.8; font-weight: bold; color: var(--vurgu); }
 
-        .row-first { background: rgba(255, 215, 0, 0.12) !important; border: 2px solid var(--altin) !important; }
+        .row-first { border: 1.5px solid var(--altin) !important; background: rgba(255, 215, 0, 0.08) !important; }
 
-        .footer-info { display: flex; justify-content: space-between; padding: 10px 40px; font-size: 0.8rem; background: rgba(0,0,0,0.05); }
+        .footer-info { display: flex; justify-content: space-between; padding: 8px 20px; font-size: 0.7rem; background: rgba(0,0,0,0.1); }
 
-        @media screen and (max-width: 600px) {
-            th:nth-child(3), td:nth-child(3) { display: none; }
-            .header, .footer-info { padding: 10px 15px; }
+        /* Mobil Optimizasyon */
+        @media screen and (max-width: 480px) {
+            .header h2 { font-size: 1.1rem; }
+            .digital-clock { font-size: 1.1rem; }
+            th, td { font-size: 0.75rem; }
+            .header { padding: 8px 10px; }
         }
     </style>
 </head>
@@ -125,13 +116,16 @@
 
 <div class="board-container">
     <div class="header">
-        <h2>SKOR TABLOSU</h2>
+        <div>
+            <h2>SKOR</h2>
+            <h2 style="font-size: 1.1rem; margin-top: -5px;">TABLOSU</h2>
+        </div>
         <div class="status-block">
             <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
             <div class="clock-controls">
                 <div class="digital-clock" id="live-clock">00:00:00</div>
-                <i class="fas fa-lightbulb icon-btn" title="Tema" onclick="toggleTheme()"></i>
-                <i class="fas fa-expand icon-btn" title="Tam Ekran" onclick="toggleFullScreen()"></i>
+                <i class="fas fa-lightbulb icon-btn" onclick="toggleTheme()"></i>
+                <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
             </div>
         </div>
     </div>
@@ -141,7 +135,7 @@
             <thead>
                 <tr>
                     <th>SIRA</th>
-                    <th style="justify-content:flex-start; padding-left:25px;">TAKIM ADI</th>
+                    <th style="justify-content:flex-start; padding-left:10px;">TAKIM</th>
                     <th>SÜRE</th>
                     <th>CEZA</th>
                     <th>TOPLAM</th>
@@ -152,7 +146,7 @@
     </div>
 
     <div class="footer-info">
-        <span id="total-label">Veriler Güncelleniyor...</span>
+        <span id="total-label">...</span>
         <span id="page-label">Sayfa 1 / 1</span>
     </div>
 </div>
@@ -165,7 +159,7 @@
     function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleFullScreen() {
         if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-        else { if (document.exitFullscreen) document.exitFullscreen(); }
+        else if (document.exitFullscreen) document.exitFullscreen();
     }
     
     function updateClock() { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); }
@@ -205,7 +199,8 @@
         const leader = allEntries[0];
         let html = `<tr class="row-first sticky-leader">
             <td><i class="fas fa-trophy" style="color:var(--altin)"></i></td>
-            <td>${leader.name}</td><td>${leader.time}s</td>
+            <td>${leader.name}</td>
+            <td>${leader.time}s</td>
             <td style="color:#ff4d4d">+${leader.penalty}s</td>
             <td>${leader.total}s</td>
         </tr>`;
@@ -220,7 +215,8 @@
         currentBatch.forEach((item, index) => {
             html += `<tr>
                 <td>${start + index + 2}</td>
-                <td>${item.name}</td><td>${item.time}s</td>
+                <td>${item.name}</td>
+                <td>${item.time}s</td>
                 <td style="color:#ff4d4d">+${item.penalty}s</td>
                 <td>${item.total}s</td>
             </tr>`;
