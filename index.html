@@ -39,23 +39,22 @@
 
         .board-container { 
             background: var(--kart-bg); 
-            padding: 10px 20px;
-            border-radius: 0; /* Tam ekran yayıldığı için köşeleri sıfırlayabiliriz veya az bırakabiliriz */
-            border: none;
-            width: 100vw; /* Tam genişlik */
-            height: 100vh; /* Tam yükseklik */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
+            border: none;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 10px 40px;
             flex-shrink: 0;
             border-bottom: 1px solid rgba(128,128,128,0.1);
+            background: rgba(0,0,0,0.1);
         }
 
         .header h2 { 
@@ -64,41 +63,47 @@
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             animation: shine 5s linear infinite;
         }
 
         @keyframes shine { to { background-position: 200% center; } }
 
         .digital-clock {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-family: 'Courier New', monospace;
             font-weight: bold;
+            color: var(--vurgu);
         }
 
         .table-container {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            padding: 10px 20px;
+            padding: 10px 30px;
             overflow: hidden;
         }
 
         table { 
             width: 100%; 
             height: 100%;
-            border-collapse: separate; 
-            border-spacing: 0 8px;
             display: flex;
             flex-direction: column;
         }
 
-        thead { flex-shrink: 0; display: block; width: 100%; }
+        thead { 
+            display: block; 
+            width: 100%; 
+            flex-shrink: 0;
+            margin-bottom: 10px;
+        }
+
         tbody { 
             flex-grow: 1; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px;
+            display: grid;
+            /* EKRANI TAM OLARAK 10 EŞİT SATIRA BÖLER */
+            grid-template-rows: repeat(10, 1fr);
+            gap: 8px;
             width: 100%;
         }
 
@@ -106,10 +111,9 @@
             display: flex; 
             align-items: center; 
             width: 100%;
-            flex: 1; 
             background: rgba(128,128,128,0.05);
-            border-radius: 12px;
-            transition: transform 0.2s;
+            border-radius: 10px;
+            box-sizing: border-box;
         }
 
         th, td { 
@@ -118,59 +122,60 @@
             display: flex; 
             align-items: center; 
             justify-content: center;
-            font-size: clamp(1rem, 2.2vh, 1.4rem);
+            font-size: clamp(0.9rem, 2.2vh, 1.3rem);
         }
 
-        /* Sütun Genişlikleri - Yatayda tam yayılım */
-        th:nth-child(1), td:nth-child(1) { flex: 0.4; } /* Sıra */
-        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 40px; } /* Takım */
-        th:nth-child(3), td:nth-child(3) { flex: 1; } /* Süre */
-        th:nth-child(4), td:nth-child(4) { flex: 1; } /* Ceza */
-        th:nth-child(5), td:nth-child(5) { flex: 1.2; } /* Toplam */
-        
+        /* Sütun Oranları */
+        th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
+        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 30px; } 
+        th:nth-child(3), td:nth-child(3) { flex: 1; } 
+        th:nth-child(4), td:nth-child(4) { flex: 1; } 
+        th:nth-child(5), td:nth-child(5) { flex: 1.2; }
+
         .row-first { 
             background: rgba(255, 215, 0, 0.12) !important; 
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.4);
         }
 
-        .toplam-vurgu { color: var(--vurgu); font-weight: bold; font-size: 1.2em; }
-
-        .trophy-icon { width: 30px; height: 30px; fill: var(--altin); }
+        .toplam-vurgu { color: var(--vurgu); font-weight: bold; }
+        .trophy-icon { width: 26px; height: 26px; fill: var(--altin); }
 
         .footer-info {
             display: flex;
             justify-content: space-between;
-            padding: 10px 40px;
-            font-size: 0.9rem;
-            opacity: 0.6;
-            flex-shrink: 0;
+            padding: 8px 40px;
+            font-size: 0.85rem;
             background: rgba(0,0,0,0.2);
+            flex-shrink: 0;
         }
 
-        .status-dot { height: 10px; width: 10px; background-color: #00ff88; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 10px #00ff88; }
+        .status-dot { height: 8px; width: 8px; background-color: #00ff88; border-radius: 50%; display: inline-block; margin-right: 8px; }
         
-        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        @media screen and (max-width: 600px) {
-            .header h2 { font-size: 1.2rem; }
-            td:nth-child(2) { padding-left: 15px; }
-            th:nth-child(3), td:nth-child(3) { display: none; }
+        .icon-btn {
+            cursor: pointer;
+            color: var(--vurgu);
+            font-size: 1.2rem;
+            transition: 0.2s;
+            opacity: 0.8;
         }
+        .icon-btn:hover { opacity: 1; transform: scale(1.1); }
     </style>
 </head>
 <body>
 
 <div class="board-container" id="mainBoard">
     <div class="header">
-        <h2>SKOR TABLOSU</h2>
+        <h2>STEM PROJESİ | SKOR TABLOSU</h2>
         <div style="text-align: right;">
             <div style="display:flex; align-items:center; gap:20px; justify-content: flex-end; margin-bottom: 5px;">
-                <span style="font-size:0.75rem; color:var(--vurgu); letter-spacing:2px; font-weight: bold;">
+                <span style="font-size:0.7rem; color:var(--vurgu); letter-spacing:1px;">
                     <span class="status-dot"></span> SİSTEM AKTİF
                 </span>
-                <i class="fas fa-adjust" style="cursor:pointer; color:var(--vurgu); font-size: 1.2rem;" onclick="toggleTheme()"></i>
+                <i class="fas fa-adjust icon-btn" onclick="toggleTheme()" title="Temayı Değiştir"></i>
+                <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()" title="Tam Ekran"></i>
             </div>
             <div class="digital-clock" id="live-clock">00:00:00</div>
         </div>
@@ -179,22 +184,22 @@
     <div class="table-container">
         <table>
             <thead>
-                <tr style="background:transparent; flex: 0; min-height: 40px;">
+                <tr style="background:transparent;">
                     <th>SIRA</th>
-                    <th style="justify-content: flex-start; padding-left: 40px;">TAKIM ADI</th>
+                    <th style="justify-content: flex-start; padding-left: 30px;">TAKIM ADI</th>
                     <th>SÜRE</th>
                     <th>CEZA</th>
                     <th>TOPLAM</th>
                 </tr>
             </thead>
             <tbody id="display-area">
-                <!-- Veriler buraya yüklenecek -->
+                <!-- Grid tarafından 10 satıra bölünecek -->
             </tbody>
         </table>
     </div>
 
     <div class="footer-info">
-        <span id="total-label">Yükleniyor...</span>
+        <span id="total-label">Veri Bekleniyor...</span>
         <span id="page-label">Sayfa 1 / 1</span>
     </div>
 </div>
@@ -207,6 +212,15 @@
     const trophySvg = `<svg class="trophy-icon" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1c1.88-.31 3.41-1.74 3.61-3.61C19.08 11.63 21 9.55 21 7V6c0-1.1-.9-2-2-2zM5 7h2v2H5V7zm14 2h-2V7h2v2z" /></svg>`;
 
     function toggleTheme() { document.body.classList.toggle('light-theme'); }
+    
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
+    }
+
     function updateClock() { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); }
     setInterval(updateClock, 1000);
 
@@ -234,7 +248,7 @@
             tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
             renderTable();
-        } catch (err) { console.error("Veri çekilemedi."); }
+        } catch (err) { console.error("STEM Veri Hatası."); }
     }
 
     function renderTable() {
