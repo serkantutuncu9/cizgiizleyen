@@ -3,287 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skor Tablosu v7</title>
-    <!-- FontAwesome ve Inter Fontu (Güvenli Bağlantı) -->
+    <title>Skor Tablosu v9</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #0d1117;
+            --dark-bg: #0d1117;
             --card-bg: #161b22;
             --text-main: #c9d1d9;
-            --accent-color: #39c5bb; /* Görseldeki o meşhur turkuaz */
-            --border-color: #30363d;
+            --turkuaz: #39c5bb;
+            --border: #30363d;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--dark-bg);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             margin: 0;
-            padding: 40px 20px;
+            padding: 20px;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
         }
 
         .container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1000px;
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 30px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
         }
 
-        /* HEADER ALANI (Görseldeki Gibi) */
-        .header {
+        /* GEÇİŞ EFEKTLİ BAŞLIK */
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 20px;
         }
 
-        .header-left h1 {
-            font-size: 2.5rem;
+        .main-title {
+            font-size: 3rem;
             font-weight: 900;
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            /* Renk Geçiş Efekti */
+            background: linear-gradient(90deg, #ffffff 0%, var(--turkuaz) 50%, #ffffff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
         }
 
-        /* SKOR TABLOSU YAZISI (Son iki harf turkuaz) */
-        .title-text span {
-            color: var(--accent-color);
-            text-shadow: 0 0 15px rgba(57, 197, 187, 0.4);
+        @keyframes shine {
+            to { background-position: 200% center; }
         }
 
-        .system-status {
+        .status-area {
             display: flex;
             align-items: center;
             font-size: 13px;
-            font-weight: bold;
-            margin-top: 15px;
-            color: var(--text-main);
+            font-weight: 700;
+            margin-top: 10px;
             letter-spacing: 1px;
         }
 
-        .dot {
-            height: 10px;
-            width: 10px;
+        .pulse {
+            height: 10px; width: 10px;
             background-color: #00ff88;
             border-radius: 50%;
             margin-right: 10px;
             box-shadow: 0 0 10px #00ff88;
-            animation: pulse 2s infinite;
+            animation: blink 2s infinite;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        /* BUTONLAR */
-        .header-right { display: flex; gap: 15px; }
-        .action-btn {
-            background: none;
-            border: none;
-            color: #8b949e;
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .action-btn:hover { color: var(--accent-color); }
+        /* TABLO */
+        .table-section { margin-top: 30px; border-top: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; }
+        th { color: #8b949e; font-size: 12px; text-transform: uppercase; padding: 15px; border-bottom: 1px solid var(--border); }
+        td { padding: 18px; text-align: center; border-bottom: 1px solid rgba(48, 54, 61, 0.4); font-size: 1.1rem; }
+        
+        .winner-row { background: rgba(57, 197, 187, 0.05); font-weight: bold; }
+        .total-highlight { color: var(--turkuaz); font-weight: 800; }
 
-        /* TABLO TASARIMI */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { 
-            color: #8b949e; 
-            font-size: 13px; 
-            padding: 15px; 
-            border-bottom: 1px solid var(--border-color);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        td { 
-            padding: 20px; 
-            text-align: center; 
-            border-bottom: 1px solid rgba(48, 54, 61, 0.5);
-            font-size: 1.1rem;
-        }
-
-        /* FOOTER (Görseldeki Düzen) */
-        .footer {
-            margin-top: 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #8b949e;
-            font-size: 14px;
-        }
-
-        /* CANLI SAAT KUTUSU */
-        #clock {
+        /* FOOTER */
+        .footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; color: #8b949e; }
+        #clock-box {
             background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-color);
-            padding: 8px 25px;
-            border-radius: 20px;
-            color: var(--accent-color);
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: inset 0 0 10px rgba(57, 197, 187, 0.1);
+            border: 1px solid var(--border);
+            padding: 8px 30px;
+            border-radius: 25px;
+            color: var(--turkuaz);
+            font-weight: 800;
+            font-size: 1.3rem;
         }
 
-        .winner { background: rgba(57, 197, 187, 0.05); }
-        .winner td:first-child { color: gold; font-weight: bold; }
+        .btn { background: none; border: none; color: #8b949e; cursor: pointer; font-size: 20px; margin-left: 15px; }
+        .btn:hover { color: var(--turkuaz); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <div class="header-left">
-            <h1 class="title-text">SKOR TABLO<span>SU</span></h1>
-            <div class="system-status">
-                <span class="dot"></span> SİSTEM AKTİF
-            </div>
+    <div class="header-top">
+        <div>
+            <h1 class="main-title">SKOR TABLOSU</h1>
+            <div class="status-area"><span class="pulse"></span> SİSTEM AKTİF</div>
         </div>
-        <div class="header-right">
-            <button class="action-btn" onclick="toggleMode()"><i class="fas fa-lightbulb"></i></button>
-            <button class="action-btn" onclick="fullScreen()"><i class="fas fa-expand-arrows-alt"></i></button>
+        <div>
+            <button class="btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i></button>
+            <button class="btn" onclick="document.documentElement.requestFullscreen()"><i class="fas fa-expand"></i></button>
         </div>
     </div>
 
-    <div style="flex-grow: 1; border-top: 1px solid var(--border-color); margin-top: 10px;">
+    <div class="table-section">
         <table>
             <thead>
                 <tr>
                     <th style="width: 10%;">SIRA</th>
-                    <th style="text-align: left; width: 40%;">TAKIM ADI</th>
+                    <th style="text-align: left; width: 45%;">TAKIM ADI</th>
                     <th style="width: 15%;">SÜRE</th>
                     <th style="width: 15%;">CEZA</th>
-                    <th style="width: 20%;">TOPLAM</th>
+                    <th style="width: 15%;">TOPLAM</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                <!-- Veriler JS ile buraya gelecek -->
+            <tbody id="scoreData">
+                <tr><td colspan="5">Yükleniyor...</td></tr>
             </tbody>
         </table>
     </div>
 
     <div class="footer">
-        <div id="pageInfo">Sayfa: 1</div>
-        <div id="clock">00:00:00</div>
-        <div id="totalInfo">Toplam: 0 Takım</div>
+        <div id="pageNow">Sayfa: 1</div>
+        <div id="clock-box">00:00:00</div>
+        <div id="totalTeams">Toplam: 0</div>
     </div>
 </div>
 
 <script>
-    let entries = [];
-    let currentPage = 0;
-    const pageSize = 10;
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
+    let list = [];
+    let page = 0;
+    const size = 10;
+    const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
 
-    // Tam Ekran Fonksiyonu
-    function fullScreen() {
-        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-        else document.exitFullscreen();
-    }
-
-    // Basit Tema Değiştirici (Görseldeki loşluğu korur)
-    function toggleMode() {
-        const body = document.body;
-        if(body.style.filter === 'invert(1)') body.style.filter = 'none';
-        else body.style.filter = 'invert(1)';
-    }
-
-    // Google Sheets'ten Veri Çekme
-    async function getData() {
+    async function load() {
         try {
-            const res = await fetch(SHEET_URL + '&t=' + new Date().getTime());
-            const csv = await res.text();
-            const rows = csv.split('\n');
-            let newEntries = [];
-
-            for(let i=1; i < rows.length; i++) {
-                const cols = rows[i].split(/[,;]/);
-                if(cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
-                    newEntries.push({
-                        name: cols[1].replace(/"/g, '').trim(),
-                        time: cols[2] || '0',
-                        penalty: cols[3] || '0',
-                        total: parseFloat(cols[4] ? cols[4].replace(',', '.') : 999)
+            const r = await fetch(URL + '&t=' + Date.now());
+            const text = await r.text();
+            const rows = text.split('\n').slice(1);
+            let items = [];
+            rows.forEach(row => {
+                const c = row.split(/[,;]/);
+                if(c[1] && c[1].trim() !== "" && !c[1].includes("Takım Adı")) {
+                    items.push({
+                        n: c[1].replace(/"/g, '').trim(),
+                        s: c[2] || '0',
+                        cz: c[3] || '0',
+                        t: parseFloat(c[4] ? c[4].replace(',', '.') : 999)
                     });
                 }
-            }
-            newEntries.sort((a, b) => a.total - b.total);
-            entries = newEntries;
-            render();
-        } catch (e) { console.error("Veri hatası:", e); }
+            });
+            items.sort((a, b) => a.t - b.t);
+            list = items;
+            draw();
+        } catch(e) {}
     }
 
-    function render() {
-        const tbody = document.getElementById('tableBody');
-        if(entries.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="padding:40px; color:#555;">Veriler yükleniyor...</td></tr>';
-            return;
-        }
+    function draw() {
+        const b = document.getElementById('scoreData');
+        if(list.length === 0) return;
 
-        const maxPage = Math.ceil((entries.length - 1) / (pageSize - 1)) || 1;
-        if(currentPage >= maxPage) currentPage = 0;
+        const max = Math.ceil((list.length - 1) / (size - 1)) || 1;
+        if(page >= max) page = 0;
 
-        // Lider (1. Sıra)
-        let html = `
-            <tr class="winner">
-                <td>🏆 1</td>
-                <td style="text-align: left; font-weight:bold;">${entries[0].name}</td>
-                <td>${entries[0].time}s</td>
-                <td style="color: #f85149;">+${entries[0].penalty}s</td>
-                <td style="color: #39c5bb; font-weight: bold;">${entries[0].total}s</td>
-            </tr>
-        `;
-
-        // Diğerleri
-        const start = currentPage * (pageSize - 1) + 1;
-        const pageItems = entries.slice(start, start + (pageSize - 1));
-
-        pageItems.forEach((item, index) => {
-            html += `
-                <tr>
-                    <td>${start + index + 1}</td>
-                    <td style="text-align: left;">${item.name}</td>
-                    <td>${item.time}s</td>
-                    <td style="color: #f85149;">+${item.penalty}s</td>
-                    <td>${item.total}s</td>
-                </tr>
-            `;
+        let h = `<tr class="winner-row"><td>🏆 1</td><td style="text-align:left;">${list[0].n}</td><td>${list[0].s}s</td><td style="color:#f85149;">+${list[0].cz}s</td><td class="total-highlight">${list[0].t}s</td></tr>`;
+        
+        const start = page * (size - 1) + 1;
+        list.slice(start, start + (size - 1)).forEach((item, i) => {
+            h += `<tr><td>${start + i + 1}</td><td style="text-align:left;">${item.n}</td><td>${item.s}s</td><td style="color:#f85149;">+${item.cz}s</td><td style="font-weight:700;">${item.t}s</td></tr>`;
         });
-
-        tbody.innerHTML = html;
-        document.getElementById('pageInfo').innerText = `Sayfa: ${currentPage + 1} / ${maxPage}`;
-        document.getElementById('totalInfo').innerText = `Toplam: ${entries.length} Takım`;
+        b.innerHTML = h;
+        document.getElementById('pageNow').innerText = `Sayfa: ${page + 1} / ${max}`;
+        document.getElementById('totalTeams').innerText = `Toplam: ${list.length} Takım`;
     }
 
-    // Döngüler
-    setInterval(getData, 15000); 
-    setInterval(() => {
-        if(entries.length > pageSize) {
-            currentPage++;
-            render();
-        }
-    }, 10000);
+    // 5 Saniyede Bir Veri Güncelleme [Talep Edilen]
+    setInterval(load, 5000); 
+    // 10 Saniyede Bir Sayfa Değiştirme
+    setInterval(() => { if(list.length > size) { page++; draw(); } }, 10000);
+    // Saat
+    setInterval(() => { document.getElementById('clock-box').innerText = new Date().toLocaleTimeString('tr-TR'); }, 1000);
 
-    // Saat Fonksiyonu
-    setInterval(() => {
-        const now = new Date();
-        document.getElementById('clock').innerText = now.toLocaleTimeString('tr-TR');
-    }, 1000);
-
-    getData();
+    load();
 </script>
 </body>
 </html>
