@@ -38,15 +38,16 @@
 
         .board-container { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
 
+        /* Üst Menü Düzenlemesi */
         .header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 20px;
+            padding: 15px 40px;
             background: rgba(0,0,0,0.2);
             border-bottom: 1px solid rgba(128,128,128,0.1);
         }
 
         .header h2 { 
-            margin: 0; font-size: 1.4rem; font-weight: 800;
+            margin: 0; font-size: 1.8rem; font-weight: 800;
             background: linear-gradient(90deg, var(--metin) 0%, var(--vurgu) 50%, var(--metin) 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
@@ -59,56 +60,66 @@
         .status-block { display: flex; flex-direction: column; align-items: flex-end; }
 
         .system-status {
-            font-size: 0.6rem; font-weight: 800; letter-spacing: 1px;
-            display: flex; align-items: center; gap: 5px; color: var(--beyaz);
-            margin-bottom: 5px;
+            font-size: 0.7rem; font-weight: 800; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 6px; color: var(--beyaz);
+            margin-bottom: 4px;
         }
 
         .status-dot {
-            height: 6px; width: 6px; background-color: var(--status-color);
+            height: 8px; width: 8px; background-color: var(--status-color);
             border-radius: 50%; animation: pulse-glow 1.5s infinite;
         }
 
         @keyframes pulse-glow {
             0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
-            70% { box-shadow: 0 0 0 8px rgba(0, 255, 136, 0); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
         }
 
-        .clock-controls { display: flex; align-items: center; gap: 10px; }
-        .digital-clock { font-size: 1.3rem; font-family: monospace; font-weight: bold; color: var(--beyaz); }
+        .clock-controls { display: flex; align-items: center; gap: 15px; }
+        .digital-clock { font-size: 1.6rem; font-family: monospace; font-weight: bold; color: var(--beyaz); }
 
-        .icon-btn { cursor: pointer; color: var(--beyaz); font-size: 0.85rem; opacity: 0.7; }
+        .icon-btn { cursor: pointer; color: var(--beyaz); font-size: 1.1rem; opacity: 0.7; }
+        .icon-btn:hover { opacity: 1; transform: scale(1.1); }
 
-        .table-container { flex-grow: 1; padding: 0 10px; overflow-y: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
+        /* Tablo Alanı - Web İçin Geniş */
+        .table-container { flex-grow: 1; padding: 10px 30px; overflow-y: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
 
         thead { position: sticky; top: 0; z-index: 100; background: var(--ana-renk); }
-        .sticky-leader {
-            position: sticky; top: 40px; z-index: 99;
-            background: var(--kart-bg) !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
+        
+        tr { display: flex; width: 100%; border-radius: 10px; min-height: 60px; background: rgba(128,128,128,0.05); }
 
-        tr { display: flex; width: 100%; border-radius: 8px; min-height: 50px; background: rgba(128,128,128,0.05); }
+        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; padding: 10px; }
+        th:nth-child(1), td:nth-child(1) { flex: 0.4; } 
+        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 25px; } 
+        th:nth-child(3), td:nth-child(3) { flex: 1; } 
+        th:nth-child(4), td:nth-child(4) { flex: 1; } 
+        th:nth-child(5), td:nth-child(5) { flex: 1.2; font-weight: bold; color: var(--vurgu); }
 
-        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; padding: 5px; text-align: center; }
-        th:nth-child(1), td:nth-child(1) { flex: 0.3; } 
-        th:nth-child(2), td:nth-child(2) { flex: 1.5; justify-content: flex-start; padding-left: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
-        th:nth-child(3), td:nth-child(3) { flex: 0.7; } 
-        th:nth-child(4), td:nth-child(4) { flex: 0.7; } 
-        th:nth-child(5), td:nth-child(5) { flex: 0.8; font-weight: bold; color: var(--vurgu); }
+        .row-first { border: 2px solid var(--altin) !important; background: rgba(255, 215, 0, 0.1) !important; }
+        .sticky-leader { position: sticky; top: 50px; z-index: 99; background: var(--kart-bg) !important; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
 
-        .row-first { border: 1.5px solid var(--altin) !important; background: rgba(255, 215, 0, 0.08) !important; }
+        .footer-info { display: flex; justify-content: space-between; padding: 10px 40px; font-size: 0.8rem; background: rgba(0,0,0,0.1); }
 
-        .footer-info { display: flex; justify-content: space-between; padding: 8px 20px; font-size: 0.7rem; background: rgba(0,0,0,0.1); }
+        /* MOBİL ÖZEL AYARLAR (Burada küçülüyor) */
+        @media screen and (max-width: 768px) {
+            .header { padding: 10px 15px; }
+            .header h2 { font-size: 1.3rem; }
+            .digital-clock { font-size: 1.2rem; }
+            .table-container { padding: 0 10px; }
+            
+            tr { min-height: 50px; border-spacing: 0 6px; }
+            th, td { font-size: 0.8rem; padding: 5px; }
+            
+            /* Sütun oranlarını mobil için daralt */
+            th:nth-child(1), td:nth-child(1) { flex: 0.3; }
+            th:nth-child(2), td:nth-child(2) { flex: 1.6; padding-left: 10px; }
+            th:nth-child(3), td:nth-child(3) { flex: 0.7; }
+            th:nth-child(4), td:nth-child(4) { flex: 0.7; }
+            th:nth-child(5), td:nth-child(5) { flex: 0.8; }
 
-        /* Mobil Optimizasyon */
-        @media screen and (max-width: 480px) {
-            .header h2 { font-size: 1.1rem; }
-            .digital-clock { font-size: 1.1rem; }
-            th, td { font-size: 0.75rem; }
-            .header { padding: 8px 10px; }
+            .footer-info { padding: 8px 15px; font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -116,16 +127,13 @@
 
 <div class="board-container">
     <div class="header">
-        <div>
-            <h2>SKOR</h2>
-            <h2 style="font-size: 1.1rem; margin-top: -5px;">TABLOSU</h2>
-        </div>
+        <h2>SKOR TABLOSU</h2>
         <div class="status-block">
             <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
             <div class="clock-controls">
                 <div class="digital-clock" id="live-clock">00:00:00</div>
-                <i class="fas fa-lightbulb icon-btn" onclick="toggleTheme()"></i>
-                <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
+                <i class="fas fa-lightbulb icon-btn" title="Tema Değiştir" onclick="toggleTheme()"></i>
+                <i class="fas fa-expand icon-btn" title="Tam Ekran" onclick="toggleFullScreen()"></i>
             </div>
         </div>
     </div>
@@ -135,7 +143,7 @@
             <thead>
                 <tr>
                     <th>SIRA</th>
-                    <th style="justify-content:flex-start; padding-left:10px;">TAKIM</th>
+                    <th style="justify-content:flex-start; padding-left:25px;">TAKIM ADI</th>
                     <th>SÜRE</th>
                     <th>CEZA</th>
                     <th>TOPLAM</th>
@@ -146,7 +154,7 @@
     </div>
 
     <div class="footer-info">
-        <span id="total-label">...</span>
+        <span id="total-label">Veriler yükleniyor...</span>
         <span id="page-label">Sayfa 1 / 1</span>
     </div>
 </div>
