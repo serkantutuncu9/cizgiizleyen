@@ -49,6 +49,7 @@
             flex-shrink: 0;
         }
 
+        /* İstediğiniz Geçiş Efektli Başlık */
         .header h2 { 
             margin: 0; font-size: 1.8rem; font-weight: 900;
             background: var(--header-gradient);
@@ -56,8 +57,10 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: shine-blue 3s linear infinite;
+            width: 250px;
         }
 
+        .project-center-title { text-align: center; flex-grow: 1; }
         .main-title {
             font-size: 2.2rem; font-weight: 900; letter-spacing: 3px;
             background: var(--gold-gradient);
@@ -67,7 +70,7 @@
             animation: shine-gold 2.5s linear infinite;
             text-transform: uppercase;
         }
-        .sub-title { font-size: 1.1rem; color: #d4af37; font-weight: 700; margin-top: -5px; text-align: center;}
+        .sub-title { font-size: 1.1rem; color: #d4af37; font-weight: 700; margin-top: -5px; }
 
         @keyframes shine-gold { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
         @keyframes shine-blue { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
@@ -75,6 +78,7 @@
         .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 250px; }
         .digital-clock { font-size: 1.8rem; font-family: monospace; font-weight: bold; color: var(--beyaz); text-shadow: 0 0 10px var(--vurgu); }
         
+        /* Sistem Aktif Pulse Efekti */
         .system-status { font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--beyaz); margin-top: 5px; }
         .status-dot { height: 10px; width: 10px; background-color: #00ff88; border-radius: 50%; animation: pulse-glow 1.5s infinite; }
         @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
@@ -92,8 +96,6 @@
         .col-total { flex: 1.2; font-weight: 800; color: var(--vurgu); }
 
         .rank-1 { background: rgba(255, 215, 0, 0.15) !important; border: 2px solid var(--altin) !important; }
-        .rank-2 { border-left: 4px solid #c0c0c0; }
-        .rank-3 { border-left: 4px solid #cd7f32; }
 
         .footer-info { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: rgba(0,0,0,0.4); flex-shrink: 0; }
         .waiting-text { font-style: italic; font-size: 0.9rem; color: var(--altin); margin-left: 15px; opacity: 0.7; }
@@ -107,10 +109,11 @@
 
 <div class="board-container">
     <div class="header">
-        <div style="width:250px">
+        <div style="display:flex; align-items:center; gap:20px;">
             <button onclick="window.location.href='https://serkantutuncu9.github.io/Portal/'" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">
                 <i class="fas fa-home"></i>
             </button>
+            <h2>SKOR TABLOSU</h2>
         </div>
         <div class="project-center-title">
             <div class="main-title">TÜRKİYE STEM YARIŞMASI</div>
@@ -162,13 +165,11 @@
     function updateClock() { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); }
     setInterval(updateClock, 1000);
 
-    // Veri çekme fonksiyonu - Sadece veriyi günceller, tabloyu çizmez
     async function fetchData() {
         try {
             const response = await fetch(CSV_URL + '&cb=' + Date.now());
             const rawData = await response.text();
             
-            // Veri değişmese bile allEntries'i doldur (ilk açılış için)
             const rows = rawData.split(/\r?\n/);
             const separator = rows[0].includes(';') ? ';' : ',';
             let tempEntries = [];
@@ -199,8 +200,6 @@
         if (allEntries.length === 0) return;
 
         const totalPages = Math.ceil(allEntries.length / itemsPerPage);
-        
-        // Güvenlik: Eğer sayfa sayısı bir şekilde aşılırsa başa dön
         if (currentPage >= totalPages) currentPage = 0;
 
         const start = currentPage * itemsPerPage;
@@ -217,8 +216,7 @@
             if (globalRank === 1 && !isWaiting) {
                 rankDisplay = '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
                 specialClass = "rank-1";
-            } else if (globalRank === 2 && !isWaiting) specialClass = "rank-2";
-            else if (globalRank === 3 && !isWaiting) specialClass = "rank-3";
+            }
 
             html += `<tr class="${specialClass}">
                 <td class="col-rank">${rankDisplay}</td>
@@ -234,23 +232,24 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
-    // ANA DÖNGÜ: Kesinlikle 1. sayfaya dönecek şekilde ayarlandı
+    // ANA DÖNGÜ: Hem sayfaları gezer hem de son sayfadan sonra 1'e döner.
     async function startCycle() {
-        await fetchData(); // İlk veriyi çek
-        renderTable();     // İlk tabloyu çiz
+        await fetchData(); 
+        renderTable();    
 
         setInterval(async () => {
+            if (allEntries.length === 0) return;
             const totalPages = Math.ceil(allEntries.length / itemsPerPage);
+            
             currentPage++;
 
             if (currentPage >= totalPages) {
-                // Sayfalar bittiğinde
-                currentPage = 0;   // Önce sayfa numarasını 0 (1. sayfa) yap
-                await fetchData(); // Arka planda veriyi tazele
+                currentPage = 0; 
+                await fetchData(); // Veriyi tazele
             }
             
-            renderTable(); // Tabloyu her durumda çiz (Bu sayede 1. sayfa her zaman görünür)
-        }, 12000); // 12 Saniye
+            renderTable(); 
+        }, 12000); 
     }
 
     startCycle();
