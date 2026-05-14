@@ -150,14 +150,13 @@
 
         .footer-info { display: flex; justify-content: space-between; padding: 12px 40px; font-size: 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); }
 
-        /* Bekleme yazısı stili */
         .waiting-text {
             font-style: italic;
-            font-size: 0.85rem;
-            opacity: 0.7;
+            font-size: 0.8rem;
+            opacity: 0.6;
             margin-left: 10px;
             font-weight: normal;
-            color: var(--altin);
+            color: #aaa;
         }
 
         @media screen and (max-width: 1024px) {
@@ -252,19 +251,33 @@
                     let penaltyRaw = cols[3]?.replace(/"/g, '').trim() || '0';
                     let totalVal = parseFloat(cols[4]?.replace(/"/g, '').replace(',', '.'));
                     
-                    // Yarışma kontrolü: Süre ve Ceza ikisi de "0" veya boş ise bekliyor kabul edilir.
+                    // Yarışma kontrolü
                     const isWaiting = (timeRaw === '0' || timeRaw === '') && (penaltyRaw === '0' || penaltyRaw === '');
 
                     tempEntries.push({
                         name: cols[1].replace(/"/g, '').trim(),
                         time: timeRaw,
                         penalty: penaltyRaw,
-                        total: isNaN(totalVal) ? 999 : totalVal,
+                        total: isNaN(totalVal) || isWaiting ? 9999 : totalVal, // Yarışmayanlara çok büyük süre veriyoruz
                         isWaiting: isWaiting
                     });
                 }
             }
-            tempEntries.sort((a, b) => a.total !== b.total ? a.total - b.total : a.name.localeCompare(b.name));
+
+            // SIRALAMA MANTIĞI:
+            // 1. Önce yarışanlar (isWaiting: false) üstte, yarışmayanlar altta.
+            // 2. Yarışanlar kendi içinde süreye (total) göre.
+            // 3. Yarışmayanlar kendi içinde alfabetik.
+            tempEntries.sort((a, b) => {
+                if (a.isWaiting !== b.isWaiting) {
+                    return a.isWaiting ? 1 : -1; 
+                }
+                if (!a.isWaiting) {
+                    return a.total - b.total;
+                }
+                return a.name.localeCompare(b.name);
+            });
+
             allEntries = tempEntries;
             renderTable();
         } catch (err) { console.error("Sync Error", err); }
@@ -275,14 +288,16 @@
         if (allEntries.length === 0) return;
 
         const leader = allEntries[0];
-        const leaderStatusHtml = leader.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+        // Eğer en iyi skora sahip olan bile henüz yarışmamışsa (liste tamamen boşsa) kupa gösterme
+        const leaderIcon = leader.isWaiting ? (currentPage * othersPerPage + 1) : '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
+        const leaderStatusHtml = leader.isWaiting ? '<span class="waiting-text">(Yarışma bekleniyor...)</span>' : '';
 
         let html = `<tr class="row-first sticky-leader">
-            <td style="flex:0.4"><i class="fas fa-trophy" style="color:var(--altin)"></i></td>
+            <td style="flex:0.4">${leaderIcon}</td>
             <td style="flex:2.5">${leader.name}${leaderStatusHtml}</td>
-            <td>${leader.time}s</td>
-            <td style="color:#ff4d4d">+${leader.penalty}s</td>
-            <td style="flex:1.2">${leader.total}s</td>
+            <td>${leader.isWaiting ? '-' : leader.time + 's'}</td>
+            <td style="color:#ff4d4d">${leader.isWaiting ? '-' : '+' + leader.penalty + 's'}</td>
+            <td style="flex:1.2">${leader.isWaiting ? '-' : leader.total + 's'}</td>
         </tr>`;
 
         const others = allEntries.slice(1);
@@ -291,14 +306,14 @@
 
         const start = currentPage * othersPerPage;
         others.slice(start, start + othersPerPage).forEach((item, index) => {
-            const itemStatusHtml = item.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+            const itemStatusHtml = item.isWaiting ? '<span class="waiting-text">(Yarışma bekleniyor...)</span>' : '';
             
             html += `<tr>
                 <td style="flex:0.4">${start + index + 2}</td>
                 <td style="flex:2.5">${item.name}${itemStatusHtml}</td>
-                <td>${item.time}s</td>
-                <td style="color:#ff4d4d">+${item.penalty}s</td>
-                <td style="flex:1.2">${item.total}s</td>
+                <td>${item.isWaiting ? '-' : item.time + 's'}</td>
+                <td style="color:#ff4d4d">${item.isWaiting ? '-' : '+' + item.penalty + 's'}</td>
+                <td style="flex:1.2">${item.isWaiting ? '-' : item.total + 's'}</td>
             </tr>`;
         });
 
