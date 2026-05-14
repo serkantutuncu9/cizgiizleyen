@@ -10,6 +10,8 @@
             --kart-bg: #161925;
             --vurgu: #00f2ff;
             --altin: #ffd700;
+            --gumus: #c0c0c0;
+            --bronz: #cd7f32;
             --metin: #e0e0e0;
             --beyaz: #ffffff;
             --status-color: #00ff88;
@@ -49,7 +51,7 @@
             flex-shrink: 0;
         }
 
-        /* İstediğiniz Geçiş Efektli Başlık */
+        /* Başlık Efekti */
         .header h2 { 
             margin: 0; font-size: 1.8rem; font-weight: 900;
             background: var(--header-gradient);
@@ -78,7 +80,7 @@
         .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 250px; }
         .digital-clock { font-size: 1.8rem; font-family: monospace; font-weight: bold; color: var(--beyaz); text-shadow: 0 0 10px var(--vurgu); }
         
-        /* Sistem Aktif Pulse Efekti */
+        /* Sistem Aktif Pulse */
         .system-status { font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--beyaz); margin-top: 5px; }
         .status-dot { height: 10px; width: 10px; background-color: #00ff88; border-radius: 50%; animation: pulse-glow 1.5s infinite; }
         @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
@@ -95,7 +97,10 @@
         .col-penalty { flex: 1; }
         .col-total { flex: 1.2; font-weight: 800; color: var(--vurgu); }
 
+        /* Derece Renkleri */
         .rank-1 { background: rgba(255, 215, 0, 0.15) !important; border: 2px solid var(--altin) !important; }
+        .rank-2 { border-left: 6px solid var(--gumus) !important; }
+        .rank-3 { border-left: 6px solid var(--bronz) !important; }
 
         .footer-info { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: rgba(0,0,0,0.4); flex-shrink: 0; }
         .waiting-text { font-style: italic; font-size: 0.9rem; color: var(--altin); margin-left: 15px; opacity: 0.7; }
@@ -154,7 +159,6 @@
     let allEntries = [];
     let currentPage = 0;
     const itemsPerPage = 9; 
-    let lastDataHash = "";
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
 
     function toggleFullScreen() {
@@ -191,7 +195,6 @@
             }
             tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
-            lastDataHash = rawData;
         } catch (err) { console.error("Veri hatası:", err); }
     }
 
@@ -213,9 +216,15 @@
             
             let rankDisplay = globalRank;
             let specialClass = "";
+            
+            // Sıralama Efektleri
             if (globalRank === 1 && !isWaiting) {
                 rankDisplay = '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
                 specialClass = "rank-1";
+            } else if (globalRank === 2 && !isWaiting) {
+                specialClass = "rank-2";
+            } else if (globalRank === 3 && !isWaiting) {
+                specialClass = "rank-3";
             }
 
             html += `<tr class="${specialClass}">
@@ -232,7 +241,6 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
-    // ANA DÖNGÜ: Hem sayfaları gezer hem de son sayfadan sonra 1'e döner.
     async function startCycle() {
         await fetchData(); 
         renderTable();    
@@ -242,12 +250,10 @@
             const totalPages = Math.ceil(allEntries.length / itemsPerPage);
             
             currentPage++;
-
             if (currentPage >= totalPages) {
                 currentPage = 0; 
-                await fetchData(); // Veriyi tazele
+                await fetchData(); 
             }
-            
             renderTable(); 
         }, 12000); 
     }
