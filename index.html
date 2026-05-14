@@ -150,7 +150,6 @@
 
         .footer-info { display: flex; justify-content: space-between; padding: 12px 40px; font-size: 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); }
 
-        /* Bekleme yazısı stili - Tekrar Gold yapıldı */
         .waiting-text {
             font-style: italic;
             font-size: 0.85rem;
@@ -252,7 +251,6 @@
                     let penaltyRaw = cols[3]?.replace(/"/g, '').trim() || '0';
                     let totalVal = parseFloat(cols[4]?.replace(/"/g, '').replace(',', '.'));
                     
-                    // Yarışma kontrolü
                     const isWaiting = (timeRaw === '0' || timeRaw === '') && (penaltyRaw === '0' || penaltyRaw === '');
 
                     tempEntries.push({
@@ -265,14 +263,9 @@
                 }
             }
 
-            // SIRALAMA: Yarışmayanlar her zaman sonda
             tempEntries.sort((a, b) => {
-                if (a.isWaiting !== b.isWaiting) {
-                    return a.isWaiting ? 1 : -1; 
-                }
-                if (!a.isWaiting) {
-                    return a.total - b.total;
-                }
+                if (a.isWaiting !== b.isWaiting) return a.isWaiting ? 1 : -1;
+                if (!a.isWaiting) return a.total - b.total;
                 return a.name.localeCompare(b.name);
             });
 
@@ -299,12 +292,10 @@
 
         const others = allEntries.slice(1);
         const totalPages = Math.max(1, Math.ceil(others.length / othersPerPage));
-        if (currentPage >= totalPages) currentPage = 0;
 
         const start = currentPage * othersPerPage;
         others.slice(start, start + othersPerPage).forEach((item, index) => {
             const itemStatusHtml = item.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
-            
             html += `<tr>
                 <td style="flex:0.4">${start + index + 2}</td>
                 <td style="flex:2.5">${item.name}${itemStatusHtml}</td>
@@ -319,16 +310,29 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
+    // SAYFA DÖNGÜSÜ DÜZELTİLDİ
     setInterval(() => {
-        const totalPages = Math.ceil((allEntries.length - 1) / othersPerPage);
-        if (totalPages > 1) {
-            if (currentPage === totalPages - 1) { currentPage = 0; fetchData(); } 
-            else { currentPage++; renderTable(); }
-        } else { fetchData(); }
+        if (allEntries.length <= 1) {
+            fetchData();
+            return;
+        }
+
+        const othersCount = allEntries.length - 1;
+        const totalPages = Math.ceil(othersCount / othersPerPage);
+
+        // Bir sonraki sayfaya geç
+        currentPage++;
+
+        // Eğer toplam sayfa sayısını aştıysak başa dön ve veriyi tazele
+        if (currentPage >= totalPages) {
+            currentPage = 0;
+            fetchData();
+        } else {
+            renderTable();
+        }
     }, 15000); 
 
     fetchData();
-    updateClock();
 </script>
 </body>
 </html>
