@@ -50,10 +50,6 @@
             flex-shrink: 0;
         }
 
-        .header-left { display: flex; align-items: center; width: 300px; gap: 20px; }
-        .portal-btn { background: none; border: none; color: var(--beyaz); font-size: 1.2rem; cursor: pointer; opacity: 0.8; }
-        .portal-btn:hover { color: var(--altin); opacity: 1; }
-
         .header h2 { 
             margin: 0; font-size: 1.8rem; font-weight: 900;
             background: var(--header-gradient);
@@ -80,35 +76,37 @@
         @keyframes shine-gold { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
         @keyframes shine-blue { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
 
-        .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 300px; }
+        .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 250px; }
         .digital-clock { font-size: 1.8rem; font-family: monospace; font-weight: bold; color: var(--beyaz); text-shadow: 0 0 10px var(--vurgu); }
 
-        .table-container { flex-grow: 1; padding: 10px 30px; overflow-y: hidden; }
+        .table-container { flex-grow: 1; padding: 10px 30px; overflow: hidden; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
         
-        tr { display: flex; width: 100%; border-radius: 12px; min-height: 60px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); align-items: center; }
+        tr { display: flex; width: 100%; border-radius: 12px; min-height: 65px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); align-items: center; }
         th, td { flex: 1; text-align: center; font-size: 1.4rem; padding: 5px; display: flex; justify-content: center; align-items: center; }
         
-        /* Sütun Genişlik Ayarları */
+        /* Sütunlar */
         .col-rank { flex: 0.5; }
         .col-name { flex: 3; justify-content: flex-start; padding-left: 30px; }
         .col-time { flex: 1; }
         .col-penalty { flex: 1; }
         .col-total { flex: 1.2; font-weight: 800; color: var(--vurgu); }
 
-        .row-first { 
-            background: rgba(255, 215, 0, 0.15) !important; 
-            border: 2px solid var(--altin) !important;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-            margin-bottom: 15px;
-        }
+        /* İlk Üç Renklendirmesi */
+        .rank-1 { background: rgba(255, 215, 0, 0.15) !important; border: 2px solid var(--altin) !important; }
+        .rank-2 { border-left: 4px solid #c0c0c0; }
+        .rank-3 { border-left: 4px solid #cd7f32; }
 
-        .footer-info { display: flex; justify-content: space-between; padding: 15px 40px; background: rgba(0,0,0,0.4); flex-shrink: 0; }
-        .waiting-text { font-style: italic; font-size: 0.9rem; color: var(--altin); margin-left: 15px; opacity: 0.8; }
+        .footer-info { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: rgba(0,0,0,0.4); flex-shrink: 0; }
+        .waiting-text { font-style: italic; font-size: 0.9rem; color: var(--altin); margin-left: 15px; opacity: 0.7; }
+
+        .controls { display: flex; align-items: center; gap: 25px; }
+        .icon-btn { cursor: pointer; font-size: 1.3rem; color: var(--beyaz); opacity: 0.7; transition: 0.3s; }
+        .icon-btn:hover { opacity: 1; color: var(--altin); }
 
         @media screen and (max-width: 1024px) {
             .main-title { font-size: 1.5rem; }
-            .header h2, .status-block, .header-left { width: auto; }
+            .header h2, .status-block { width: auto; }
         }
     </style>
 </head>
@@ -116,9 +114,10 @@
 
 <div class="board-container">
     <div class="header">
-        <div class="header-left">
-            <button class="portal-btn" onclick="goToPortal()"><i class="fas fa-home"></i></button>
-            <h2>SKOR TABLOSU</h2>
+        <div style="width:250px">
+            <button class="portal-btn" onclick="window.location.href='https://serkantutuncu9.github.io/Portal/'" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">
+                <i class="fas fa-home"></i>
+            </button>
         </div>
         <div class="project-center-title">
             <div class="main-title">TÜRKİYE STEM YARIŞMASI</div>
@@ -141,16 +140,18 @@
                     <th class="col-total">TOPLAM</th>
                 </tr>
             </thead>
-            <tbody id="display-area">
-                </tbody>
+            <tbody id="display-area"></tbody>
         </table>
     </div>
 
     <div class="footer-info">
-        <span id="total-label" style="color:var(--altin)">Yükleniyor...</span>
-        <div>
-            <i class="fas fa-expand icon-btn" style="cursor:pointer; margin-right:20px" onclick="toggleFullScreen()"></i>
-            <span id="page-label">Sayfa 1 / 1</span>
+        <span id="total-label" style="color:var(--altin); font-weight:bold;">Yükleniyor...</span>
+        
+        <span id="page-label" style="font-size: 1.1rem; letter-spacing: 1px;">Sayfa 1 / 1</span>
+
+        <div class="controls">
+            <i class="fas fa-lightbulb icon-btn" title="Tema Değiştir" onclick="document.body.classList.toggle('light-theme')"></i>
+            <i class="fas fa-expand icon-btn" title="Tam Ekran" onclick="toggleFullScreen()"></i>
         </div>
     </div>
 </div>
@@ -158,12 +159,11 @@
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const othersPerPage = 8; // Sayfa başına takım sayısı (Lider hariç)
+    const itemsPerPage = 9; // Lider ayrımı kalktığı için artık her sayfada 9 takım olacak
     let lastDataHash = "";
 
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
 
-    function goToPortal() { window.location.href = "https://serkantutuncu9.github.io/Portal/"; }
     function toggleFullScreen() {
         if (!document.fullscreenElement) document.documentElement.requestFullscreen();
         else document.exitFullscreen();
@@ -196,17 +196,14 @@
                         name: cols[1].replace(/"/g, '').trim(),
                         time: timeRaw,
                         penalty: penaltyRaw,
-                        total: isNaN(totalVal) || isWaiting ? 99999 : totalVal,
+                        total: isNaN(totalVal) || isWaiting ? 999999 : totalVal,
                         isWaiting: isWaiting
                     });
                 }
             }
 
-            tempEntries.sort((a, b) => {
-                if (a.isWaiting !== b.isWaiting) return a.isWaiting ? 1 : -1;
-                return a.total - b.total;
-            });
-
+            // SIRALAMA: Toplam süreye göre küçükten büyüğe
+            tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
             renderTable();
         } catch (err) { console.error("Veri hatası:", err); }
@@ -216,38 +213,37 @@
         const tbody = document.getElementById('display-area');
         if (allEntries.length === 0) return;
 
-        // 1. Sıradaki Lideri Al (Her zaman en üstte)
-        const leader = allEntries[0];
-        const leaderStatus = leader.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
-        const leaderIcon = leader.isWaiting ? '1' : '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
-
-        let html = `
-            <tr class="row-first">
-                <td class="col-rank">${leaderIcon}</td>
-                <td class="col-name"><strong>${leader.name}</strong>${leaderStatus}</td>
-                <td class="col-time">${leader.isWaiting ? '-' : leader.time + 's'}</td>
-                <td class="col-penalty" style="color:#ff4d4d">${leader.isWaiting ? '-' : '+' + leader.penalty + 's'}</td>
-                <td class="col-total">${leader.isWaiting ? '-' : leader.total + 's'}</td>
-            </tr>`;
-
-        // Diğerlerini Sayfala (2. sıradan başla)
-        const others = allEntries.slice(1);
-        const totalPages = Math.max(1, Math.ceil(others.length / othersPerPage));
-        
+        const totalPages = Math.ceil(allEntries.length / itemsPerPage);
         if (currentPage >= totalPages) currentPage = 0;
 
-        const start = currentPage * othersPerPage;
-        const pageItems = others.slice(start, start + othersPerPage);
+        const start = currentPage * itemsPerPage;
+        const pageItems = allEntries.slice(start, start + itemsPerPage);
 
+        let html = "";
         pageItems.forEach((item, index) => {
-            const status = item.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+            const globalRank = start + index + 1;
+            const isWaiting = item.total === 999999;
+            const statusText = isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+            
+            // Sıralama İkonları
+            let rankDisplay = globalRank;
+            let specialClass = "";
+            if (globalRank === 1 && !isWaiting) {
+                rankDisplay = '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
+                specialClass = "rank-1";
+            } else if (globalRank === 2 && !isWaiting) {
+                specialClass = "rank-2";
+            } else if (globalRank === 3 && !isWaiting) {
+                specialClass = "rank-3";
+            }
+
             html += `
-                <tr>
-                    <td class="col-rank">${start + index + 2}</td>
-                    <td class="col-name">${item.name}${status}</td>
-                    <td class="col-time">${item.isWaiting ? '-' : item.time + 's'}</td>
-                    <td class="col-penalty" style="color:#ff4d4d">${item.isWaiting ? '-' : '+' + item.penalty + 's'}</td>
-                    <td class="col-total">${item.isWaiting ? '-' : item.total + 's'}</td>
+                <tr class="${specialClass}">
+                    <td class="col-rank">${rankDisplay}</td>
+                    <td class="col-name"><strong>${item.name}</strong>${statusText}</td>
+                    <td class="col-time">${isWaiting ? '-' : item.time + 's'}</td>
+                    <td class="col-penalty" style="color:#ff4d4d">${isWaiting ? '-' : '+' + item.penalty + 's'}</td>
+                    <td class="col-total">${isWaiting ? '-' : item.total + 's'}</td>
                 </tr>`;
         });
 
@@ -256,24 +252,20 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
-    // ANA DÖNGÜ (Düzeltildi)
+    // DÖNGÜ: Sayfaları gez ve veriyi tazele
     setInterval(() => {
-        if (allEntries.length > 1) {
-            const othersCount = allEntries.length - 1;
-            const totalPages = Math.ceil(othersCount / othersPerPage);
-            
-            currentPage++;
+        if (allEntries.length === 0) return;
+        
+        const totalPages = Math.ceil(allEntries.length / itemsPerPage);
+        currentPage++;
 
-            if (currentPage >= totalPages) {
-                currentPage = 0; // Başa dön (Sayfa 1)
-                fetchData();    // Veriyi güncelle
-            } else {
-                renderTable();  // Sonraki sayfayı çiz
-            }
+        if (currentPage >= totalPages) {
+            currentPage = 0; // Başa dön
+            fetchData();     // Veriyi yenile
         } else {
-            fetchData();
+            renderTable();   // Mevcut verilerle sonraki sayfayı çiz
         }
-    }, 12000); // 12 saniyede bir geçiş yap
+    }, 12000); // 12 Saniye
 
     fetchData();
     updateClock();
