@@ -34,8 +34,7 @@
             margin: 0; padding: 0;
             font-family: 'Segoe UI', sans-serif;
             color: var(--metin);
-            height: 100vh;
-            width: 100vw;
+            height: 100vh; width: 100vw;
             overflow: hidden;
         }
 
@@ -59,11 +58,8 @@
             animation: shine-blue 3s linear infinite;
         }
 
-        .project-center-title { text-align: center; flex-grow: 1; }
         .main-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 3px;
+            font-size: 2.2rem; font-weight: 900; letter-spacing: 3px;
             background: var(--gold-gradient);
             background-size: 200% auto;
             -webkit-background-clip: text;
@@ -71,13 +67,17 @@
             animation: shine-gold 2.5s linear infinite;
             text-transform: uppercase;
         }
-        .sub-title { font-size: 1.1rem; color: #d4af37; font-weight: 700; margin-top: -5px; }
+        .sub-title { font-size: 1.1rem; color: #d4af37; font-weight: 700; margin-top: -5px; text-align: center;}
 
         @keyframes shine-gold { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
         @keyframes shine-blue { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
 
         .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 250px; }
         .digital-clock { font-size: 1.8rem; font-family: monospace; font-weight: bold; color: var(--beyaz); text-shadow: 0 0 10px var(--vurgu); }
+        
+        .system-status { font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--beyaz); margin-top: 5px; }
+        .status-dot { height: 10px; width: 10px; background-color: #00ff88; border-radius: 50%; animation: pulse-glow 1.5s infinite; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
 
         .table-container { flex-grow: 1; padding: 10px 30px; overflow: hidden; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
@@ -85,14 +85,12 @@
         tr { display: flex; width: 100%; border-radius: 12px; min-height: 65px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); align-items: center; }
         th, td { flex: 1; text-align: center; font-size: 1.4rem; padding: 5px; display: flex; justify-content: center; align-items: center; }
         
-        /* Sütunlar */
         .col-rank { flex: 0.5; }
         .col-name { flex: 3; justify-content: flex-start; padding-left: 30px; }
         .col-time { flex: 1; }
         .col-penalty { flex: 1; }
         .col-total { flex: 1.2; font-weight: 800; color: var(--vurgu); }
 
-        /* İlk Üç Renklendirmesi */
         .rank-1 { background: rgba(255, 215, 0, 0.15) !important; border: 2px solid var(--altin) !important; }
         .rank-2 { border-left: 4px solid #c0c0c0; }
         .rank-3 { border-left: 4px solid #cd7f32; }
@@ -103,11 +101,6 @@
         .controls { display: flex; align-items: center; gap: 25px; }
         .icon-btn { cursor: pointer; font-size: 1.3rem; color: var(--beyaz); opacity: 0.7; transition: 0.3s; }
         .icon-btn:hover { opacity: 1; color: var(--altin); }
-
-        @media screen and (max-width: 1024px) {
-            .main-title { font-size: 1.5rem; }
-            .header h2, .status-block { width: auto; }
-        }
     </style>
 </head>
 <body>
@@ -115,7 +108,7 @@
 <div class="board-container">
     <div class="header">
         <div style="width:250px">
-            <button class="portal-btn" onclick="window.location.href='https://serkantutuncu9.github.io/Portal/'" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">
+            <button onclick="window.location.href='https://serkantutuncu9.github.io/Portal/'" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">
                 <i class="fas fa-home"></i>
             </button>
         </div>
@@ -125,7 +118,7 @@
         </div>
         <div class="status-block">
             <div class="digital-clock" id="live-clock">00:00:00</div>
-            <div style="font-size: 0.7rem; color: var(--status-color);"><i class="fas fa-circle"></i> SİSTEM AKTİF</div>
+            <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
         </div>
     </div>
 
@@ -146,9 +139,7 @@
 
     <div class="footer-info">
         <span id="total-label" style="color:var(--altin); font-weight:bold;">Yükleniyor...</span>
-        
         <span id="page-label" style="font-size: 1.1rem; letter-spacing: 1px;">Sayfa 1 / 1</span>
-
         <div class="controls">
             <i class="fas fa-lightbulb icon-btn" title="Tema Değiştir" onclick="document.body.classList.toggle('light-theme')"></i>
             <i class="fas fa-expand icon-btn" title="Tam Ekran" onclick="toggleFullScreen()"></i>
@@ -159,9 +150,8 @@
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const itemsPerPage = 9; // Lider ayrımı kalktığı için artık her sayfada 9 takım olacak
+    const itemsPerPage = 9; 
     let lastDataHash = "";
-
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
 
     function toggleFullScreen() {
@@ -172,13 +162,13 @@
     function updateClock() { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); }
     setInterval(updateClock, 1000);
 
+    // Veri çekme fonksiyonu - Sadece veriyi günceller, tabloyu çizmez
     async function fetchData() {
         try {
             const response = await fetch(CSV_URL + '&cb=' + Date.now());
             const rawData = await response.text();
-            if (rawData === lastDataHash) return;
-            lastDataHash = rawData;
-
+            
+            // Veri değişmese bile allEntries'i doldur (ilk açılış için)
             const rows = rawData.split(/\r?\n/);
             const separator = rows[0].includes(';') ? ';' : ',';
             let tempEntries = [];
@@ -189,23 +179,18 @@
                     let timeRaw = cols[2]?.trim() || '0';
                     let penaltyRaw = cols[3]?.trim() || '0';
                     let totalVal = parseFloat(cols[4]?.replace(',', '.'));
-                    
                     const isWaiting = (timeRaw === '0' || timeRaw === '') && (penaltyRaw === '0' || penaltyRaw === '');
-
                     tempEntries.push({
                         name: cols[1].replace(/"/g, '').trim(),
-                        time: timeRaw,
-                        penalty: penaltyRaw,
+                        time: timeRaw, penalty: penaltyRaw,
                         total: isNaN(totalVal) || isWaiting ? 999999 : totalVal,
                         isWaiting: isWaiting
                     });
                 }
             }
-
-            // SIRALAMA: Toplam süreye göre küçükten büyüğe
             tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
-            renderTable();
+            lastDataHash = rawData;
         } catch (err) { console.error("Veri hatası:", err); }
     }
 
@@ -214,6 +199,8 @@
         if (allEntries.length === 0) return;
 
         const totalPages = Math.ceil(allEntries.length / itemsPerPage);
+        
+        // Güvenlik: Eğer sayfa sayısı bir şekilde aşılırsa başa dön
         if (currentPage >= totalPages) currentPage = 0;
 
         const start = currentPage * itemsPerPage;
@@ -225,26 +212,21 @@
             const isWaiting = item.total === 999999;
             const statusText = isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
             
-            // Sıralama İkonları
             let rankDisplay = globalRank;
             let specialClass = "";
             if (globalRank === 1 && !isWaiting) {
                 rankDisplay = '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
                 specialClass = "rank-1";
-            } else if (globalRank === 2 && !isWaiting) {
-                specialClass = "rank-2";
-            } else if (globalRank === 3 && !isWaiting) {
-                specialClass = "rank-3";
-            }
+            } else if (globalRank === 2 && !isWaiting) specialClass = "rank-2";
+            else if (globalRank === 3 && !isWaiting) specialClass = "rank-3";
 
-            html += `
-                <tr class="${specialClass}">
-                    <td class="col-rank">${rankDisplay}</td>
-                    <td class="col-name"><strong>${item.name}</strong>${statusText}</td>
-                    <td class="col-time">${isWaiting ? '-' : item.time + 's'}</td>
-                    <td class="col-penalty" style="color:#ff4d4d">${isWaiting ? '-' : '+' + item.penalty + 's'}</td>
-                    <td class="col-total">${isWaiting ? '-' : item.total + 's'}</td>
-                </tr>`;
+            html += `<tr class="${specialClass}">
+                <td class="col-rank">${rankDisplay}</td>
+                <td class="col-name"><strong>${item.name}</strong>${statusText}</td>
+                <td class="col-time">${isWaiting ? '-' : item.time + 's'}</td>
+                <td class="col-penalty" style="color:#ff4d4d">${isWaiting ? '-' : '+' + item.penalty + 's'}</td>
+                <td class="col-total">${isWaiting ? '-' : item.total + 's'}</td>
+            </tr>`;
         });
 
         tbody.innerHTML = html;
@@ -252,22 +234,26 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
-    // DÖNGÜ: Sayfaları gez ve veriyi tazele
-    setInterval(() => {
-        if (allEntries.length === 0) return;
-        
-        const totalPages = Math.ceil(allEntries.length / itemsPerPage);
-        currentPage++;
+    // ANA DÖNGÜ: Kesinlikle 1. sayfaya dönecek şekilde ayarlandı
+    async function startCycle() {
+        await fetchData(); // İlk veriyi çek
+        renderTable();     // İlk tabloyu çiz
 
-        if (currentPage >= totalPages) {
-            currentPage = 0; // Başa dön
-            fetchData();     // Veriyi yenile
-        } else {
-            renderTable();   // Mevcut verilerle sonraki sayfayı çiz
-        }
-    }, 12000); // 12 Saniye
+        setInterval(async () => {
+            const totalPages = Math.ceil(allEntries.length / itemsPerPage);
+            currentPage++;
 
-    fetchData();
+            if (currentPage >= totalPages) {
+                // Sayfalar bittiğinde
+                currentPage = 0;   // Önce sayfa numarasını 0 (1. sayfa) yap
+                await fetchData(); // Arka planda veriyi tazele
+            }
+            
+            renderTable(); // Tabloyu her durumda çiz (Bu sayede 1. sayfa her zaman görünür)
+        }, 12000); // 12 Saniye
+    }
+
+    startCycle();
     updateClock();
 </script>
 </body>
