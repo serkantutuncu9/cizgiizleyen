@@ -150,6 +150,16 @@
 
         .footer-info { display: flex; justify-content: space-between; padding: 12px 40px; font-size: 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); }
 
+        /* Bekleme yazısı stili */
+        .waiting-text {
+            font-style: italic;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-left: 10px;
+            font-weight: normal;
+            color: var(--altin);
+        }
+
         @media screen and (max-width: 1024px) {
             .main-title { font-size: 1.5rem; }
             .sub-title { font-size: 0.9rem; }
@@ -162,7 +172,6 @@
 <div class="board-container">
     <div class="header">
         <div class="header-left">
-            <!-- Tam ekranı bozmadan yönlendiren buton -->
             <button class="portal-btn" onclick="goToPortal()" title="Portal Ana Sayfa">
                 <i class="fas fa-home"></i>
             </button>
@@ -212,7 +221,6 @@
     let lastDataHash = ""; 
 
     function goToPortal() {
-        // Mevcut pencere içinde (tam ekran dahil) yönlendirme yapar
         window.location.href = "https://serkantutuncu9.github.io/Portal/";
     }
 
@@ -240,12 +248,19 @@
             for (let i = 1; i < rows.length; i++) {
                 const cols = rows[i].split(separator);
                 if (cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
+                    let timeRaw = cols[2]?.replace(/"/g, '').trim() || '0';
+                    let penaltyRaw = cols[3]?.replace(/"/g, '').trim() || '0';
                     let totalVal = parseFloat(cols[4]?.replace(/"/g, '').replace(',', '.'));
+                    
+                    // Yarışma kontrolü: Süre ve Ceza ikisi de "0" veya boş ise bekliyor kabul edilir.
+                    const isWaiting = (timeRaw === '0' || timeRaw === '') && (penaltyRaw === '0' || penaltyRaw === '');
+
                     tempEntries.push({
                         name: cols[1].replace(/"/g, '').trim(),
-                        time: cols[2]?.replace(/"/g, '').trim() || '0',
-                        penalty: cols[3]?.replace(/"/g, '').trim() || '0',
-                        total: isNaN(totalVal) ? 999 : totalVal
+                        time: timeRaw,
+                        penalty: penaltyRaw,
+                        total: isNaN(totalVal) ? 999 : totalVal,
+                        isWaiting: isWaiting
                     });
                 }
             }
@@ -260,9 +275,11 @@
         if (allEntries.length === 0) return;
 
         const leader = allEntries[0];
+        const leaderStatusHtml = leader.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+
         let html = `<tr class="row-first sticky-leader">
             <td style="flex:0.4"><i class="fas fa-trophy" style="color:var(--altin)"></i></td>
-            <td style="flex:2.5">${leader.name}</td>
+            <td style="flex:2.5">${leader.name}${leaderStatusHtml}</td>
             <td>${leader.time}s</td>
             <td style="color:#ff4d4d">+${leader.penalty}s</td>
             <td style="flex:1.2">${leader.total}s</td>
@@ -274,9 +291,11 @@
 
         const start = currentPage * othersPerPage;
         others.slice(start, start + othersPerPage).forEach((item, index) => {
+            const itemStatusHtml = item.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+            
             html += `<tr>
                 <td style="flex:0.4">${start + index + 2}</td>
-                <td style="flex:2.5">${item.name}</td>
+                <td style="flex:2.5">${item.name}${itemStatusHtml}</td>
                 <td>${item.time}s</td>
                 <td style="color:#ff4d4d">+${item.penalty}s</td>
                 <td style="flex:1.2">${item.total}s</td>
