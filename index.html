@@ -150,13 +150,14 @@
 
         .footer-info { display: flex; justify-content: space-between; padding: 12px 40px; font-size: 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); }
 
+        /* Bekleme yazısı stili - Tekrar Gold yapıldı */
         .waiting-text {
             font-style: italic;
-            font-size: 0.8rem;
-            opacity: 0.6;
+            font-size: 0.85rem;
+            opacity: 0.7;
             margin-left: 10px;
             font-weight: normal;
-            color: #aaa;
+            color: var(--altin);
         }
 
         @media screen and (max-width: 1024px) {
@@ -258,16 +259,13 @@
                         name: cols[1].replace(/"/g, '').trim(),
                         time: timeRaw,
                         penalty: penaltyRaw,
-                        total: isNaN(totalVal) || isWaiting ? 9999 : totalVal, // Yarışmayanlara çok büyük süre veriyoruz
+                        total: isNaN(totalVal) || isWaiting ? 99999 : totalVal, 
                         isWaiting: isWaiting
                     });
                 }
             }
 
-            // SIRALAMA MANTIĞI:
-            // 1. Önce yarışanlar (isWaiting: false) üstte, yarışmayanlar altta.
-            // 2. Yarışanlar kendi içinde süreye (total) göre.
-            // 3. Yarışmayanlar kendi içinde alfabetik.
+            // SIRALAMA: Yarışmayanlar her zaman sonda
             tempEntries.sort((a, b) => {
                 if (a.isWaiting !== b.isWaiting) {
                     return a.isWaiting ? 1 : -1; 
@@ -288,9 +286,8 @@
         if (allEntries.length === 0) return;
 
         const leader = allEntries[0];
-        // Eğer en iyi skora sahip olan bile henüz yarışmamışsa (liste tamamen boşsa) kupa gösterme
-        const leaderIcon = leader.isWaiting ? (currentPage * othersPerPage + 1) : '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
-        const leaderStatusHtml = leader.isWaiting ? '<span class="waiting-text">(Yarışma bekleniyor...)</span>' : '';
+        const leaderStatusHtml = leader.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+        const leaderIcon = leader.isWaiting ? '1' : '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
 
         let html = `<tr class="row-first sticky-leader">
             <td style="flex:0.4">${leaderIcon}</td>
@@ -306,7 +303,7 @@
 
         const start = currentPage * othersPerPage;
         others.slice(start, start + othersPerPage).forEach((item, index) => {
-            const itemStatusHtml = item.isWaiting ? '<span class="waiting-text">(Yarışma bekleniyor...)</span>' : '';
+            const itemStatusHtml = item.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
             
             html += `<tr>
                 <td style="flex:0.4">${start + index + 2}</td>
