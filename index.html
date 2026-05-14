@@ -35,6 +35,7 @@
             font-family: 'Segoe UI', sans-serif;
             color: var(--metin);
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
         }
 
@@ -43,36 +44,15 @@
         .header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 40px;
-            background: rgba(0,0,0,0.3);
-            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+            background: rgba(0,0,0,0.4);
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            flex-shrink: 0;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            width: 300px;
-            gap: 20px;
-        }
-
-        .portal-btn {
-            background: none;
-            border: none;
-            color: var(--beyaz);
-            font-size: 1.2rem;
-            opacity: 0.8;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            padding: 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .portal-btn:hover {
-            opacity: 1;
-            color: var(--altin);
-            transform: translateY(-1px);
-        }
+        .header-left { display: flex; align-items: center; width: 300px; gap: 20px; }
+        .portal-btn { background: none; border: none; color: var(--beyaz); font-size: 1.2rem; cursor: pointer; opacity: 0.8; }
+        .portal-btn:hover { color: var(--altin); opacity: 1; }
 
         .header h2 { 
             margin: 0; font-size: 1.8rem; font-weight: 900;
@@ -83,13 +63,7 @@
             animation: shine-blue 3s linear infinite;
         }
 
-        .project-center-title {
-            text-align: center;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
+        .project-center-title { text-align: center; flex-grow: 1; }
         .main-title {
             font-size: 2.2rem;
             font-weight: 900;
@@ -100,68 +74,40 @@
             -webkit-text-fill-color: transparent;
             animation: shine-gold 2.5s linear infinite;
             text-transform: uppercase;
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
         }
+        .sub-title { font-size: 1.1rem; color: #d4af37; font-weight: 700; margin-top: -5px; }
 
-        .sub-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #d4af37;
-            letter-spacing: 2px;
-            opacity: 0.9;
-            margin-top: -5px;
-        }
-
-        @keyframes shine-gold {
-            0% { background-position: 200% center; }
-            100% { background-position: -200% center; }
-        }
-
-        @keyframes shine-blue {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
+        @keyframes shine-gold { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
+        @keyframes shine-blue { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
 
         .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 300px; }
-        .system-status { font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 6px; color: var(--beyaz); margin-bottom: 4px; }
-        .status-dot { height: 10px; width: 10px; background-color: var(--status-color); border-radius: 50%; animation: pulse-glow 1.5s infinite; }
-        
-        @keyframes pulse-glow { 
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); } 
-            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } 
-        }
-
-        .clock-controls { display: flex; align-items: center; gap: 15px; }
         .digital-clock { font-size: 1.8rem; font-family: monospace; font-weight: bold; color: var(--beyaz); text-shadow: 0 0 10px var(--vurgu); }
-        .icon-btn { cursor: pointer; color: var(--beyaz); font-size: 1.2rem; opacity: 0.8; }
-        .icon-btn:hover { opacity: 1; color: var(--altin); }
 
-        .table-container { flex-grow: 1; padding: 10px 30px; overflow-y: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
-        thead { position: sticky; top: 0; z-index: 100; background: var(--ana-renk); }
-        tr { display: flex; width: 100%; border-radius: 12px; min-height: 65px; background: rgba(128,128,128,0.08); border: 1px solid rgba(255,255,255,0.05); }
-        th, td { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; padding: 10px; }
-        th:nth-child(2), td:nth-child(2) { flex: 2.5; justify-content: flex-start; padding-left: 25px; } 
-        th:nth-child(5), td:nth-child(5) { flex: 1.2; font-weight: 800; color: var(--vurgu); }
+        .table-container { flex-grow: 1; padding: 10px 30px; overflow-y: hidden; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        
+        tr { display: flex; width: 100%; border-radius: 12px; min-height: 60px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); align-items: center; }
+        th, td { flex: 1; text-align: center; font-size: 1.4rem; padding: 5px; display: flex; justify-content: center; align-items: center; }
+        
+        /* Sütun Genişlik Ayarları */
+        .col-rank { flex: 0.5; }
+        .col-name { flex: 3; justify-content: flex-start; padding-left: 30px; }
+        .col-time { flex: 1; }
+        .col-penalty { flex: 1; }
+        .col-total { flex: 1.2; font-weight: 800; color: var(--vurgu); }
 
-        .row-first { border: 2px solid var(--altin) !important; background: rgba(255, 215, 0, 0.1) !important; box-shadow: inset 0 0 15px rgba(255, 215, 0, 0.1); }
-        .sticky-leader { position: sticky; top: 55px; z-index: 99; background: var(--kart-bg) !important; }
-
-        .footer-info { display: flex; justify-content: space-between; padding: 12px 40px; font-size: 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); }
-
-        .waiting-text {
-            font-style: italic;
-            font-size: 0.85rem;
-            opacity: 0.7;
-            margin-left: 10px;
-            font-weight: normal;
-            color: var(--altin);
+        .row-first { 
+            background: rgba(255, 215, 0, 0.15) !important; 
+            border: 2px solid var(--altin) !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            margin-bottom: 15px;
         }
+
+        .footer-info { display: flex; justify-content: space-between; padding: 15px 40px; background: rgba(0,0,0,0.4); flex-shrink: 0; }
+        .waiting-text { font-style: italic; font-size: 0.9rem; color: var(--altin); margin-left: 15px; opacity: 0.8; }
 
         @media screen and (max-width: 1024px) {
             .main-title { font-size: 1.5rem; }
-            .sub-title { font-size: 0.9rem; }
             .header h2, .status-block, .header-left { width: auto; }
         }
     </style>
@@ -171,68 +117,60 @@
 <div class="board-container">
     <div class="header">
         <div class="header-left">
-            <button class="portal-btn" onclick="goToPortal()" title="Portal Ana Sayfa">
-                <i class="fas fa-home"></i>
-            </button>
+            <button class="portal-btn" onclick="goToPortal()"><i class="fas fa-home"></i></button>
             <h2>SKOR TABLOSU</h2>
         </div>
-        
         <div class="project-center-title">
             <div class="main-title">TÜRKİYE STEM YARIŞMASI</div>
             <div class="sub-title">Çizgi İzleyen Yarışması</div>
         </div>
-
         <div class="status-block">
-            <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
-            <div class="clock-controls">
-                <div class="digital-clock" id="live-clock">00:00:00</div>
-                <i class="fas fa-lightbulb icon-btn" onclick="toggleTheme()"></i>
-                <i class="fas fa-expand icon-btn" onclick="toggleFullScreen()"></i>
-            </div>
+            <div class="digital-clock" id="live-clock">00:00:00</div>
+            <div style="font-size: 0.7rem; color: var(--status-color);"><i class="fas fa-circle"></i> SİSTEM AKTİF</div>
         </div>
     </div>
 
     <div class="table-container">
         <table>
             <thead>
-                <tr>
-                    <th style="flex:0.4">SIRA</th>
-                    <th style="justify-content:flex-start; padding-left:25px;">TAKIM ADI</th>
-                    <th>SÜRE</th>
-                    <th>CEZA</th>
-                    <th style="flex:1.2">TOPLAM</th>
+                <tr style="background: none; border: none; font-weight: bold; color: var(--altin);">
+                    <th class="col-rank">SIRA</th>
+                    <th class="col-name">TAKIM ADI</th>
+                    <th class="col-time">SÜRE</th>
+                    <th class="col-penalty">CEZA</th>
+                    <th class="col-total">TOPLAM</th>
                 </tr>
             </thead>
-            <tbody id="display-area"></tbody>
+            <tbody id="display-area">
+                </tbody>
         </table>
     </div>
 
     <div class="footer-info">
-        <span id="total-label" style="color:var(--altin)">Veriler Alınıyor...</span>
-        <span id="page-label">Sayfa 1 / 1</span>
+        <span id="total-label" style="color:var(--altin)">Yükleniyor...</span>
+        <div>
+            <i class="fas fa-expand icon-btn" style="cursor:pointer; margin-right:20px" onclick="toggleFullScreen()"></i>
+            <span id="page-label">Sayfa 1 / 1</span>
+        </div>
     </div>
 </div>
 
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const othersPerPage = 9; 
-    let lastDataHash = ""; 
+    const othersPerPage = 8; // Sayfa başına takım sayısı (Lider hariç)
+    let lastDataHash = "";
 
-    function goToPortal() {
-        window.location.href = "https://serkantutuncu9.github.io/Portal/";
-    }
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
 
-    function toggleTheme() { document.body.classList.toggle('light-theme'); }
+    function goToPortal() { window.location.href = "https://serkantutuncu9.github.io/Portal/"; }
     function toggleFullScreen() {
         if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-        else if (document.exitFullscreen) document.exitFullscreen();
+        else document.exitFullscreen();
     }
     
     function updateClock() { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); }
     setInterval(updateClock, 1000);
-
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
 
     async function fetchData() {
         try {
@@ -244,12 +182,13 @@
             const rows = rawData.split(/\r?\n/);
             const separator = rows[0].includes(';') ? ';' : ',';
             let tempEntries = [];
+
             for (let i = 1; i < rows.length; i++) {
                 const cols = rows[i].split(separator);
                 if (cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
-                    let timeRaw = cols[2]?.replace(/"/g, '').trim() || '0';
-                    let penaltyRaw = cols[3]?.replace(/"/g, '').trim() || '0';
-                    let totalVal = parseFloat(cols[4]?.replace(/"/g, '').replace(',', '.'));
+                    let timeRaw = cols[2]?.trim() || '0';
+                    let penaltyRaw = cols[3]?.trim() || '0';
+                    let totalVal = parseFloat(cols[4]?.replace(',', '.'));
                     
                     const isWaiting = (timeRaw === '0' || timeRaw === '') && (penaltyRaw === '0' || penaltyRaw === '');
 
@@ -257,7 +196,7 @@
                         name: cols[1].replace(/"/g, '').trim(),
                         time: timeRaw,
                         penalty: penaltyRaw,
-                        total: isNaN(totalVal) || isWaiting ? 99999 : totalVal, 
+                        total: isNaN(totalVal) || isWaiting ? 99999 : totalVal,
                         isWaiting: isWaiting
                     });
                 }
@@ -265,44 +204,51 @@
 
             tempEntries.sort((a, b) => {
                 if (a.isWaiting !== b.isWaiting) return a.isWaiting ? 1 : -1;
-                if (!a.isWaiting) return a.total - b.total;
-                return a.name.localeCompare(b.name);
+                return a.total - b.total;
             });
 
             allEntries = tempEntries;
             renderTable();
-        } catch (err) { console.error("Sync Error", err); }
+        } catch (err) { console.error("Veri hatası:", err); }
     }
 
     function renderTable() {
         const tbody = document.getElementById('display-area');
         if (allEntries.length === 0) return;
 
+        // 1. Sıradaki Lideri Al (Her zaman en üstte)
         const leader = allEntries[0];
-        const leaderStatusHtml = leader.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+        const leaderStatus = leader.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
         const leaderIcon = leader.isWaiting ? '1' : '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
 
-        let html = `<tr class="row-first sticky-leader">
-            <td style="flex:0.4">${leaderIcon}</td>
-            <td style="flex:2.5">${leader.name}${leaderStatusHtml}</td>
-            <td>${leader.isWaiting ? '-' : leader.time + 's'}</td>
-            <td style="color:#ff4d4d">${leader.isWaiting ? '-' : '+' + leader.penalty + 's'}</td>
-            <td style="flex:1.2">${leader.isWaiting ? '-' : leader.total + 's'}</td>
-        </tr>`;
+        let html = `
+            <tr class="row-first">
+                <td class="col-rank">${leaderIcon}</td>
+                <td class="col-name"><strong>${leader.name}</strong>${leaderStatus}</td>
+                <td class="col-time">${leader.isWaiting ? '-' : leader.time + 's'}</td>
+                <td class="col-penalty" style="color:#ff4d4d">${leader.isWaiting ? '-' : '+' + leader.penalty + 's'}</td>
+                <td class="col-total">${leader.isWaiting ? '-' : leader.total + 's'}</td>
+            </tr>`;
 
+        // Diğerlerini Sayfala (2. sıradan başla)
         const others = allEntries.slice(1);
         const totalPages = Math.max(1, Math.ceil(others.length / othersPerPage));
+        
+        if (currentPage >= totalPages) currentPage = 0;
 
         const start = currentPage * othersPerPage;
-        others.slice(start, start + othersPerPage).forEach((item, index) => {
-            const itemStatusHtml = item.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
-            html += `<tr>
-                <td style="flex:0.4">${start + index + 2}</td>
-                <td style="flex:2.5">${item.name}${itemStatusHtml}</td>
-                <td>${item.isWaiting ? '-' : item.time + 's'}</td>
-                <td style="color:#ff4d4d">${item.isWaiting ? '-' : '+' + item.penalty + 's'}</td>
-                <td style="flex:1.2">${item.isWaiting ? '-' : item.total + 's'}</td>
-            </tr>`;
+        const pageItems = others.slice(start, start + othersPerPage);
+
+        pageItems.forEach((item, index) => {
+            const status = item.isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
+            html += `
+                <tr>
+                    <td class="col-rank">${start + index + 2}</td>
+                    <td class="col-name">${item.name}${status}</td>
+                    <td class="col-time">${item.isWaiting ? '-' : item.time + 's'}</td>
+                    <td class="col-penalty" style="color:#ff4d4d">${item.isWaiting ? '-' : '+' + item.penalty + 's'}</td>
+                    <td class="col-total">${item.isWaiting ? '-' : item.total + 's'}</td>
+                </tr>`;
         });
 
         tbody.innerHTML = html;
@@ -310,29 +256,27 @@
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
     }
 
-    // SAYFA DÖNGÜSÜ DÜZELTİLDİ
+    // ANA DÖNGÜ (Düzeltildi)
     setInterval(() => {
-        if (allEntries.length <= 1) {
-            fetchData();
-            return;
-        }
+        if (allEntries.length > 1) {
+            const othersCount = allEntries.length - 1;
+            const totalPages = Math.ceil(othersCount / othersPerPage);
+            
+            currentPage++;
 
-        const othersCount = allEntries.length - 1;
-        const totalPages = Math.ceil(othersCount / othersPerPage);
-
-        // Bir sonraki sayfaya geç
-        currentPage++;
-
-        // Eğer toplam sayfa sayısını aştıysak başa dön ve veriyi tazele
-        if (currentPage >= totalPages) {
-            currentPage = 0;
-            fetchData();
+            if (currentPage >= totalPages) {
+                currentPage = 0; // Başa dön (Sayfa 1)
+                fetchData();    // Veriyi güncelle
+            } else {
+                renderTable();  // Sonraki sayfayı çiz
+            }
         } else {
-            renderTable();
+            fetchData();
         }
-    }, 15000); 
+    }, 12000); // 12 saniyede bir geçiş yap
 
     fetchData();
+    updateClock();
 </script>
 </body>
 </html>
