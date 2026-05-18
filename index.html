@@ -51,7 +51,6 @@
             flex-shrink: 0;
         }
 
-        /* Başlık Efekti */
         .header h2 { 
             margin: 0; font-size: 1.8rem; font-weight: 900;
             background: var(--header-gradient);
@@ -80,7 +79,6 @@
         .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 250px; }
         .digital-clock { font-size: 1.8rem; font-family: monospace; font-weight: bold; color: var(--beyaz); text-shadow: 0 0 10px var(--vurgu); }
         
-        /* Sistem Aktif Pulse */
         .system-status { font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--beyaz); margin-top: 5px; }
         .status-dot { height: 10px; width: 10px; background-color: #00ff88; border-radius: 50%; animation: pulse-glow 1.5s infinite; }
         @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
@@ -97,7 +95,6 @@
         .col-penalty { flex: 1; }
         .col-total { flex: 1.2; font-weight: 800; color: var(--vurgu); }
 
-        /* Derece Renkleri */
         .rank-1 { background: rgba(255, 215, 0, 0.15) !important; border: 2px solid var(--altin) !important; }
         .rank-2 { border-left: 6px solid var(--gumus) !important; }
         .rank-3 { border-left: 6px solid var(--bronz) !important; }
@@ -159,7 +156,9 @@
     let allEntries = [];
     let currentPage = 0;
     const itemsPerPage = 9; 
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRcR-oVEvPsXtMPXJ6bNs2xn3ugUd8OiQYz7lIztA3eqR6u0lMwyuaXReKLJJ7CmnMrTlm6N6RxuN0h/pub?output=csv';
+    
+    // Yeni tablonuzun CSV çıktı formatına dönüştürülmüş güncel linki
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVfTp7wZiJaJ95n2H7NWiEWQIvn6SX7V6t8hK0FbsqCirFD-Os7KIMe4O1_Im3uOERV3VUYwdKcYod/pub?output=csv&gid=660813098';
 
     function toggleFullScreen() {
         if (!document.fullscreenElement) document.documentElement.requestFullscreen();
@@ -179,20 +178,33 @@
             let tempEntries = [];
 
             for (let i = 1; i < rows.length; i++) {
+                if (!rows[i].trim()) continue;
+                
                 const cols = rows[i].split(separator);
-                if (cols[1] && cols[1].trim() !== "" && !cols[1].includes("Takım Adı")) {
-                    let timeRaw = cols[2]?.trim() || '0';
-                    let penaltyRaw = cols[3]?.trim() || '0';
-                    let totalVal = parseFloat(cols[4]?.replace(',', '.'));
+                
+                // Belirttiğiniz sütun dizilimi: 
+                // cols[0]: Sıra No, cols[1]: takimid, cols[2]: takimadi, cols[3]: Süre, cols[4]: Ceza, cols[5]: Toplam
+                if (cols[2] && cols[2].trim() !== "" && !cols[2].includes("takimadi")) {
+                    let nameVal = cols[2].replace(/"/g, '').trim();
+                    let timeRaw = cols[3]?.trim() || '0';
+                    let penaltyRaw = cols[4]?.trim() || '0';
+                    let totalRaw = cols[5]?.trim() || '0';
+                    
+                    let totalVal = parseFloat(totalRaw.replace(',', '.'));
+                    
+                    // Henüz süre/ceza girilmemiş veya 0 olan takımları listenin sonuna atmak için kontrol
                     const isWaiting = (timeRaw === '0' || timeRaw === '') && (penaltyRaw === '0' || penaltyRaw === '');
+                    
                     tempEntries.push({
-                        name: cols[1].replace(/"/g, '').trim(),
-                        time: timeRaw, penalty: penaltyRaw,
+                        name: nameVal,
+                        time: timeRaw, 
+                        penalty: penaltyRaw,
                         total: isNaN(totalVal) || isWaiting ? 999999 : totalVal,
                         isWaiting: isWaiting
                     });
                 }
             }
+            // En düşük toplam süreye (en iyi dereceye) göre sıralama
             tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
         } catch (err) { console.error("Veri hatası:", err); }
@@ -217,7 +229,7 @@
             let rankDisplay = globalRank;
             let specialClass = "";
             
-            // Sıralama Efektleri
+            // Sıralama Efektleri (Bekleyenler podyum dışı kalır)
             if (globalRank === 1 && !isWaiting) {
                 rankDisplay = '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
                 specialClass = "rank-1";
