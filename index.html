@@ -3,216 +3,1183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çizgi İzleyen | Türkiye STEM Sonuç Ekranı</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
         :root {
-            --ana-renk: #0f111a;
-            --kart-bg: #161925;
-            --vurgu: #00f2ff;
-            --altin: #ffd700;
-            --gumus: #c0c0c0;
-            --bronz: #cd7f32;
-            --metin: #e0e0e0;
-            --beyaz: #ffffff;
-            --status-color: #00ff88;
-            --gold-gradient: linear-gradient(90deg, #b8860b 0%, #ffd700 25%, #ffface 50%, #ffd700 75%, #b8860b 100%);
-            --header-gradient: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 50%, #00d2ff 100%);
+            --ink: #ffffff;
+            --muted: rgba(255,255,255,0.72);
+            --border: rgba(255,255,255,0.16);
+            --cyan: #00b0ff;
+            --pink: #ff1493;
+            --purple: #8a2be2;
+            --gold: #ffd600;
+            --green: #7cff8b;
+            --red: #ff4d4d;
+            --silver: #cfd8dc;
+            --bronze: #cd7f32;
+            --accent-gradient: linear-gradient(135deg, #ff4d4d, #ff1493, #7b61ff, #00b0ff);
         }
 
-        body.light-theme {
-            --ana-renk: #f0f4f8 !important;
-            --kart-bg: #ffffff !important;
-            --vurgu: #000080 !important;
-            --metin: #000033 !important;
-            --altin: #a67c00 !important;
-            --beyaz: #000033 !important;
-            --status-color: #000080 !important;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease, background .28s ease, opacity .28s ease;
         }
 
-        * { transition: background-color 0.4s ease, color 0.4s ease; box-sizing: border-box; }
-
-        body { 
-            background-color: var(--ana-renk); 
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', sans-serif;
-            color: var(--metin);
-            height: 100vh; width: 100vw;
-            overflow: hidden;
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--ink);
+            overflow-x: hidden;
         }
 
-        .board-container { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 12% 16%, rgba(255, 20, 147, 0.22), transparent 26%),
+                radial-gradient(circle at 88% 16%, rgba(0, 176, 255, 0.20), transparent 26%),
+                radial-gradient(circle at 52% 92%, rgba(138, 43, 226, 0.22), transparent 32%),
+                linear-gradient(135deg, #030718 0%, #071436 52%, #070018 100%);
+        }
 
-        .header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 40px;
-            background: rgba(0,0,0,0.4);
-            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(rgba(255,255,255,0.62) 1px, transparent 1.5px),
+                radial-gradient(rgba(0,217,255,0.40) 1px, transparent 1.5px),
+                radial-gradient(rgba(255,20,147,0.34) 1px, transparent 1.5px);
+            background-size: 72px 72px, 128px 128px, 190px 190px;
+            opacity: 0.18;
+            animation: starMove 28s linear infinite;
+            pointer-events: none;
+            z-index: -3;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(3,7,24,0.25), transparent 38%, rgba(3,7,24,0.25)),
+                radial-gradient(circle at 50% 100%, rgba(255, 20, 147, 0.17), transparent 36%);
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        @keyframes starMove {
+            from { transform: translateY(0); }
+            to { transform: translateY(140px); }
+        }
+
+        #dnaCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.26;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 8px 24px;
+            border-bottom: 1px solid rgba(26,35,126,0.10);
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .nav-inner {
+            width: min(1320px, 100%);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .nav-title {
+            display: inline-flex;
+            align-items: center;
+            font-size: clamp(1rem, 2vw, 1.28rem);
+            font-weight: 900;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+
+        .home-logo {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            text-decoration: none;
             flex-shrink: 0;
         }
 
-        .header h2 { 
-            margin: 0; font-size: 1.8rem; font-weight: 900;
-            background: var(--header-gradient);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine-blue 3s linear infinite;
-            width: 250px;
+        .home-logo:hover { transform: translateY(-2px) scale(1.03); }
+
+        .home-logo img {
+            width: 46px;
+            height: 46px;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,.16));
         }
 
-        .project-center-title { text-align: center; flex-grow: 1; }
-        .main-title {
-            font-size: 2.2rem; font-weight: 900; letter-spacing: 3px;
-            background: var(--gold-gradient);
-            background-size: 200% auto;
+        .home-text {
+            font-weight: 900;
+            font-size: .95rem;
+            letter-spacing: .2px;
+            white-space: nowrap;
+            background: var(--accent-gradient);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine-gold 2.5s linear infinite;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+
+        .screen-wrap {
+            width: min(1320px, 100%);
+            margin: 0 auto;
+            padding: 18px 24px 24px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .score-hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            padding: 26px 30px;
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.13), rgba(255,255,255,0.045)),
+                radial-gradient(circle at 12% 20%, rgba(0,176,255,0.20), transparent 30%),
+                radial-gradient(circle at 86% 28%, rgba(255,20,147,0.16), transparent 30%);
+            border: 1px solid var(--border);
+            box-shadow: 0 24px 64px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.14);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .score-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            transform: translateX(-100%);
+            animation: shine 7s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0%, 42% { transform: translateX(-110%); }
+            62%, 100% { transform: translateX(110%); }
+        }
+
+        .hero-left, .hero-right { position: relative; z-index: 2; }
+
+        .category-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.82);
+            font-size: .78rem;
+            font-weight: 900;
+            letter-spacing: 3px;
             text-transform: uppercase;
         }
-        .sub-title { font-size: 1.1rem; color: #d4af37; font-weight: 700; margin-top: -5px; }
 
-        @keyframes shine-gold { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
-        @keyframes shine-blue { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        .category-kicker span:nth-child(1) { color: var(--cyan); }
+        .category-kicker span:nth-child(2) { color: var(--gold); }
+        .category-kicker span:nth-child(3) { color: var(--green); }
 
-        .status-block { display: flex; flex-direction: column; align-items: flex-end; width: 250px; }
-        .digital-clock { font-size: 1.8rem; font-family: monospace; font-weight: bold; color: var(--beyaz); text-shadow: 0 0 10px var(--vurgu); }
-        
-        .system-status { font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--beyaz); margin-top: 5px; }
-        .status-dot { height: 10px; width: 10px; background-color: #00ff88; border-radius: 50%; animation: pulse-glow 1.5s infinite; }
-        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
+        .score-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-        .table-container { flex-grow: 1; padding: 10px 30px; overflow: hidden; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        
-        tr { display: flex; width: 100%; border-radius: 12px; min-height: 65px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); align-items: center; }
-        th, td { flex: 1; text-align: center; font-size: 1.4rem; padding: 5px; display: flex; justify-content: center; align-items: center; }
-        
-        .col-rank { flex: 0.5; }
-        .col-name { flex: 3; justify-content: flex-start; padding-left: 30px; }
-        .col-time { flex: 1; }
-        .col-penalty { flex: 1; }
-        .col-total { flex: 1.2; font-weight: 800; color: var(--vurgu); }
+        .title-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.09);
+            border: 1px solid rgba(255,255,255,0.14);
+            color: var(--cyan);
+            font-size: 1.75rem;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 0 28px rgba(0,176,255,0.12);
+        }
 
-        .rank-1 { background: rgba(255, 215, 0, 0.15) !important; border: 2px solid var(--altin) !important; }
-        .rank-2 { border-left: 6px solid var(--gumus) !important; }
-        .rank-3 { border-left: 6px solid var(--bronz) !important; }
+        h1 {
+            font-size: clamp(2rem, 4.2vw, 4.4rem);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            text-shadow: 0 14px 34px rgba(0,0,0,0.34);
+        }
 
-        .footer-info { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: rgba(0,0,0,0.4); flex-shrink: 0; }
-        .waiting-text { font-style: italic; font-size: 0.9rem; color: var(--altin); margin-left: 15px; opacity: 0.7; }
+        h1 strong {
+            display: block;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+        }
 
-        .controls { display: flex; align-items: center; gap: 25px; }
-        .icon-btn { cursor: pointer; font-size: 1.3rem; color: var(--beyaz); opacity: 0.7; transition: 0.3s; }
-        .icon-btn:hover { opacity: 1; color: var(--altin); }
+        .hero-note {
+            margin-top: 12px;
+            max-width: 740px;
+            color: var(--muted);
+            line-height: 1.65;
+            font-size: .96rem;
+            font-weight: 500;
+        }
+
+        .hero-right {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(150px, 1fr));
+            gap: 12px;
+            min-width: 330px;
+        }
+
+        .weather-card {
+            grid-column: span 2;
+            min-height: 92px;
+            padding: 14px 16px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.065);
+            border: 1px solid rgba(255,255,255,0.13);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            overflow: hidden;
+        }
+
+        .weather-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            background: radial-gradient(circle, rgba(255,214,0,.18), rgba(0,176,255,.08));
+            border: 1px solid rgba(255,255,255,.12);
+            font-size: 1.7rem;
+            filter: drop-shadow(0 0 16px rgba(255,214,0,.25));
+        }
+
+        .weather-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-areas:
+                "city temp"
+                "desc temp";
+            align-items: center;
+            gap: 2px 14px;
+            min-width: 0;
+        }
+
+        .weather-city {
+            grid-area: city;
+            color: rgba(255,255,255,.62);
+            font-size: .68rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+        }
+
+        #weather-temp {
+            grid-area: temp;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 16px rgba(0,176,255,.22);
+            white-space: nowrap;
+        }
+
+        #weather-desc {
+            grid-area: desc;
+            color: rgba(255,255,255,.78);
+            font-size: .82rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .light-theme .weather-card {
+            background: rgba(255,255,255,.78);
+            border-color: rgba(26,35,126,.13);
+            color: #151829;
+            box-shadow: 0 10px 26px rgba(26,35,126,.06);
+        }
+
+        .light-theme .weather-icon {
+            background: radial-gradient(circle, rgba(255,214,0,.24), rgba(0,176,255,.10));
+            border-color: rgba(26,35,126,.10);
+        }
+
+        .light-theme .weather-city { color: rgba(21,24,41,.62); }
+        .light-theme #weather-temp { color: #1a237e; text-shadow: none; }
+        .light-theme #weather-desc { color: rgba(21,24,41,.72); }
+
+        .leader-card {
+            grid-column: span 2;
+            min-height: 92px;
+            padding: 14px 16px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.065);
+            border: 1px solid rgba(255,255,255,0.13);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .leader-cup {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 14px rgba(255,214,0,.55)) drop-shadow(0 0 28px rgba(255,20,147,.22));
+            animation: stemGlow 3s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        #leader-name {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.2;
+            text-align: left;
+        }
+
+        .light-theme .leader-card {
+            background: rgba(255,255,255,.78);
+            border-color: rgba(26,35,126,.13);
+            color: #151829;
+            box-shadow: 0 10px 26px rgba(26,35,126,.06);
+        }
+
+        .light-theme #leader-name {
+            color: #151829;
+        }
+
+        .info-tile {
+            min-height: 92px;
+            padding: 16px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.065);
+            border: 1px solid rgba(255,255,255,0.13);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .info-tile .label {
+            color: rgba(255,255,255,0.62);
+            font-size: .68rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .info-tile .value {
+            color: #fff;
+            font-size: 1.12rem;
+            font-weight: 900;
+        }
+
+        .digital-clock {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            color: var(--cyan) !important;
+            text-shadow: 0 0 16px rgba(0,176,255,0.28);
+        }
+
+        .system-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--green) !important;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulseGlow 1.6s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(124,255,139,.62); }
+            70% { box-shadow: 0 0 0 10px rgba(124,255,139,0); }
+            100% { box-shadow: 0 0 0 0 rgba(124,255,139,0); }
+        }
+
+        .table-panel {
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            border-radius: 30px;
+            padding: 18px;
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.105), rgba(255,255,255,0.035)),
+                radial-gradient(circle at 18% 12%, rgba(255,20,147,0.10), transparent 30%);
+            border: 1px solid rgba(255,255,255,0.13);
+            box-shadow: 0 22px 56px rgba(0,0,0,0.24);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .table-head {
+            display: grid;
+            grid-template-columns: .6fr 3fr 1fr 1fr 1.15fr;
+            gap: 10px;
+            padding: 0 10px 10px;
+            color: rgba(255,255,255,0.62);
+            font-size: .76rem;
+            font-weight: 900;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+        }
+
+        .table-body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .score-row {
+            display: grid;
+            grid-template-columns: .6fr 3fr 1fr 1fr 1.15fr;
+            gap: 10px;
+            min-height: 62px;
+            align-items: center;
+            padding: 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.065);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+        }
+
+        .score-row > div,
+        .table-head > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .score-row .team-cell,
+        .table-head .team-cell {
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        @keyframes stemGlow {
+            0%,100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px rgba(255,214,0,.65)) drop-shadow(0 0 22px rgba(255,20,147,.25));
+            }
+            50% {
+                transform: scale(1.08);
+                filter: drop-shadow(0 0 20px rgba(255,214,0,.95)) drop-shadow(0 0 34px rgba(0,176,255,.35));
+            }
+        }
+
+        .stem-cup {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255,214,0,.65)) drop-shadow(0 0 22px rgba(255,20,147,.25));
+            animation: stemGlow 3s ease-in-out infinite;
+        }
+
+        .rank-cell {
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        .team-name {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .team-name strong {
+            font-size: 1.08rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .waiting-text {
+            color: rgba(255,255,255,.54);
+            font-size: .74rem;
+            font-style: normal;
+            font-weight: 700;
+        }
+
+        .time-cell,
+        .penalty-cell,
+        .total-cell {
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .penalty-cell { color: #ff9aa8; }
+        .total-cell { color: var(--cyan); }
+
+        .rank-1 {
+            background:
+                linear-gradient(135deg, rgba(255,214,0,.24), rgba(255,255,255,.07)),
+                radial-gradient(circle at 8% 50%, rgba(255,214,0,.24), transparent 28%);
+            border-color: rgba(255,214,0,.72);
+            box-shadow: 0 0 34px rgba(255,214,0,.16), inset 0 1px 0 rgba(255,255,255,0.14);
+        }
+
+        .rank-2 {
+            background:
+                linear-gradient(135deg, rgba(207,216,220,.18), rgba(255,255,255,.055)),
+                radial-gradient(circle at 8% 50%, rgba(207,216,220,.20), transparent 28%);
+            border-color: rgba(207,216,220,.48);
+            border-left: 6px solid var(--silver);
+        }
+
+        .rank-3 {
+            background:
+                linear-gradient(135deg, rgba(205,127,50,.20), rgba(255,255,255,.052)),
+                radial-gradient(circle at 8% 50%, rgba(205,127,50,.20), transparent 28%);
+            border-color: rgba(205,127,50,.48);
+            border-left: 6px solid var(--bronze);
+        }
+
+        .rank-1 .rank-cell,
+        .rank-1 .total-cell { color: var(--gold); }
+        .rank-2 .rank-cell,
+        .rank-2 .total-cell { color: var(--silver); }
+        .rank-3 .rank-cell,
+        .rank-3 .total-cell { color: var(--bronze); }
+
+        .light-theme .rank-1 {
+            background:
+                linear-gradient(135deg, rgba(255,214,0,.34), rgba(255,255,255,.84)),
+                radial-gradient(circle at 8% 50%, rgba(255,214,0,.30), transparent 30%);
+            border-color: rgba(166,124,0,.52);
+            box-shadow: 0 14px 32px rgba(166,124,0,.14), inset 0 1px 0 rgba(255,255,255,.90);
+        }
+
+        .light-theme .rank-2 {
+            background:
+                linear-gradient(135deg, rgba(176,190,197,.32), rgba(255,255,255,.86)),
+                radial-gradient(circle at 8% 50%, rgba(176,190,197,.30), transparent 30%);
+            border-color: rgba(96,125,139,.32);
+            border-left: 6px solid #90a4ae;
+            box-shadow: 0 12px 28px rgba(96,125,139,.10), inset 0 1px 0 rgba(255,255,255,.90);
+        }
+
+        .light-theme .rank-3 {
+            background:
+                linear-gradient(135deg, rgba(205,127,50,.30), rgba(255,255,255,.86)),
+                radial-gradient(circle at 8% 50%, rgba(205,127,50,.28), transparent 30%);
+            border-color: rgba(141,84,36,.34);
+            border-left: 6px solid #b87333;
+            box-shadow: 0 12px 28px rgba(141,84,36,.10), inset 0 1px 0 rgba(255,255,255,.90);
+        }
+
+        .light-theme .rank-1 .rank-cell,
+        .light-theme .rank-1 .total-cell { color: #a67c00; }
+        .light-theme .rank-2 .rank-cell,
+        .light-theme .rank-2 .total-cell { color: #607d8b; }
+        .light-theme .rank-3 .rank-cell,
+        .light-theme .rank-3 .total-cell { color: #9a5a23; }
+
+        .empty-state {
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            color: rgba(255,255,255,.62);
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            color: var(--cyan);
+        }
+
+        .bottom-bar {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 14px;
+            border-radius: 24px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.075);
+            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .footer-system {
+            justify-self: start;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--green);
+            font-weight: 900;
+            font-size: .92rem;
+            letter-spacing: .2px;
+        }
+
+        .footer-clock {
+            justify-self: center;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 1.78rem;
+            font-weight: 900;
+            letter-spacing: 1.8px;
+            line-height: 1;
+            background: linear-gradient(135deg, #bdf4ff, #d8d2ff, #ffd4f2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 5px rgba(189,244,255,.16));
+            animation: clockPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes clockPulse {
+            0%,100% {
+                opacity: .96;
+                filter: drop-shadow(0 0 4px rgba(189,244,255,.12));
+            }
+            50% {
+                opacity: 1;
+                filter: drop-shadow(0 0 7px rgba(216,210,255,.18));
+            }
+        }
+            50% {
+                opacity: 1;
+                transform: translateY(-1px);
+                filter: drop-shadow(0 0 8px rgba(123,97,255,.14));
+            }
+        }
+            50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(0,176,255,.55)); }
+        }
+
+        .light-theme .footer-system { color: #087a44; }
+        .light-theme .footer-clock {
+            background: linear-gradient(135deg, #0d47a1, #4527a0, #7b1fa2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: none;
+        }
+
+        .page-label {
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.07);
+            color: rgba(255,255,255,.55);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            background: rgba(255,255,255,.12);
+        }
+
+        .light-theme {
+            background:
+                radial-gradient(circle at 12% 16%, rgba(255, 20, 147, 0.14), transparent 28%),
+                radial-gradient(circle at 88% 16%, rgba(0, 176, 255, 0.14), transparent 28%),
+                linear-gradient(135deg, #f7f9ff 0%, #eef4ff 55%, #fff3fb 100%);
+            color: #151829;
+        }
+
+        .light-theme::after { background: transparent; }
+        .light-theme #dnaCanvas { opacity: .16; }
+        .light-theme .score-hero,
+        .light-theme .table-panel,
+        .light-theme .bottom-bar {
+            background: rgba(255,255,255,.72);
+            border-color: rgba(26,35,126,.10);
+            color: #151829;
+        }
+        .light-theme .hero-note,
+        .light-theme .waiting-text,
+        .light-theme .table-head,
+        .light-theme .total-label { color: rgba(21,24,41,.68); }
+        .light-theme .score-row,
+        .light-theme .info-tile {
+            background: rgba(255,255,255,.78);
+            border-color: rgba(26,35,126,.13);
+            color: #151829;
+            box-shadow: 0 10px 26px rgba(26,35,126,.06);
+        }
+
+        .light-theme .info-tile .label {
+            color: rgba(21,24,41,.62);
+        }
+
+        .light-theme .info-tile .value {
+            color: #151829;
+        }
+
+        .light-theme .digital-clock {
+            color: #1a237e !important;
+            text-shadow: none;
+        }
+
+        .light-theme .system-status {
+            color: #087a44 !important;
+        }
+
+        .light-theme .bottom-bar {
+            color: #151829;
+        }
+
+        .light-theme .page-label {
+            color: #1a237e;
+        }
+
+        .light-theme .icon-btn {
+            background: rgba(26,35,126,.07);
+            border-color: rgba(26,35,126,.14);
+            color: #1a237e;
+        }
+
+        .light-theme .icon-btn:hover {
+            background: rgba(26,35,126,.12);
+            color: #4a148c;
+        }
+
+        @media (max-width: 1100px) {
+            .score-hero { grid-template-columns: 1fr; }
+            .hero-right { min-width: 0; }
+        }
+
+        @media (max-width: 760px) {
+            .screen-wrap {
+                padding-top: 12px;
+            }
+            body::before {
+                background-size: 58px 58px, 104px 104px, 156px 156px;
+                opacity: 0.14;
+            }
+
+            #dnaCanvas { opacity: .20; }
+
+            .top-nav { padding: 8px 12px; }
+            .nav-inner { gap: 10px; }
+
+            .nav-title {
+                font-size: clamp(.82rem, 4.2vw, 1rem);
+                letter-spacing: .2px;
+                line-height: 1.15;
+                max-width: 50vw;
+                white-space: normal;
+            }
+
+            .home-logo { gap: 6px; }
+            .home-logo img { width: 36px; height: 36px; }
+
+            .home-text {
+                font-size: .74rem;
+                padding: 6px 9px;
+                border-radius: 999px;
+                background: linear-gradient(135deg, rgba(255,77,77,.12), rgba(255,20,147,.13), rgba(0,176,255,.12));
+                color: #4a148c;
+                border: 1px solid rgba(74,20,140,.12);
+                box-shadow: 0 6px 16px rgba(26,35,126,.06);
+            }
+
+            .screen-wrap {
+                padding: 14px 12px 18px;
+                min-height: calc(100vh - 58px);
+            }
+
+            .score-hero {
+                border-radius: 22px;
+                padding: 20px 14px;
+                gap: 18px;
+            }
+
+            .category-kicker {
+                font-size: .62rem;
+                letter-spacing: 1.2px;
+                gap: 7px;
+                flex-wrap: wrap;
+            }
+
+            .score-title {
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .title-icon {
+                width: 50px;
+                height: 50px;
+                min-width: 50px;
+                border-radius: 18px;
+                font-size: 1.35rem;
+                margin-top: 2px;
+            }
+
+            h1 {
+                font-size: clamp(1.65rem, 10vw, 2.65rem);
+                line-height: 1.05;
+            }
+
+            .hero-note {
+                font-size: .84rem;
+                line-height: 1.55;
+            }
+
+            .hero-right {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .info-tile {
+                min-height: 78px;
+                border-radius: 18px;
+                padding: 12px;
+            }
+
+            .leader-card {
+                grid-column: span 2;
+                min-height: 82px;
+                border-radius: 18px;
+                padding: 12px;
+                gap: 12px;
+            }
+
+            .leader-cup {
+                width: 54px;
+                height: 54px;
+            }
+
+            #leader-name {
+                font-size: 1rem;
+            }
+
+            .info-tile .label { font-size: .58rem; letter-spacing: 1px; }
+            .info-tile .value { font-size: .9rem; }
+
+            .table-panel {
+                border-radius: 22px;
+                padding: 12px;
+            }
+
+            .table-head { display: none; }
+
+            .table-body { gap: 10px; }
+
+            .score-row {
+                grid-template-columns: 48px 1fr;
+                grid-template-areas:
+                    "rank team"
+                    "rank meta";
+                min-height: 112px;
+                padding: 13px;
+                gap: 8px 12px;
+                border-radius: 19px;
+            }
+
+            .rank-cell { grid-area: rank; align-self: stretch; font-size: 1.12rem; }
+            .team-cell { grid-area: team; justify-content: flex-start !important; }
+            .time-cell, .penalty-cell, .total-cell {
+                grid-area: meta;
+                justify-content: flex-start !important;
+                font-size: .78rem;
+                background: rgba(255,255,255,.055);
+                border: 1px solid rgba(255,255,255,.08);
+                border-radius: 999px;
+                padding: 6px 8px;
+                display: inline-flex;
+                width: fit-content;
+                margin-right: 6px;
+            }
+
+            .time-cell::before { content: "Süre: "; color: rgba(255,255,255,.56); margin-right: 3px; }
+            .penalty-cell::before { content: "Ceza: "; color: rgba(255,255,255,.56); margin-right: 3px; }
+            .total-cell::before { content: "Toplam: "; color: rgba(255,255,255,.56); margin-right: 3px; }
+
+            .score-row .time-cell { margin-left: 60px; }
+            .score-row .penalty-cell { margin-left: 60px; transform: translateX(82px); }
+            .score-row .total-cell { margin-left: 60px; transform: translateX(164px); }
+
+            .team-name strong { font-size: .95rem; }
+            .waiting-text { font-size: .68rem; }
+
+            .bottom-bar {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 10px;
+                padding: 14px;
+                border-radius: 20px;
+            }
+
+            .controls { justify-content: center; }
+            .footer-system, .footer-clock { justify-self: center; }
+        }
+
+        @media (max-width: 430px) {
+            .score-row {
+                grid-template-columns: 44px 1fr;
+                min-height: 148px;
+            }
+
+            .time-cell, .penalty-cell, .total-cell {
+                width: calc(100% - 54px);
+                margin-left: 54px !important;
+                transform: none !important;
+            }
+
+            .time-cell { margin-top: 4px; }
+            .penalty-cell { margin-top: 42px; }
+            .total-cell { margin-top: 80px; }
+        }
     </style>
 </head>
 <body>
+<canvas id="dnaCanvas"></canvas>
 
-<div class="board-container">
-    <div class="header">
-        <div style="display:flex; align-items:center; gap:20px;">
-            <button onclick="window.location.href='https://serkantutuncu9.github.io/Portal/'" style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">
-                <i class="fas fa-home"></i>
-            </button>
-            <h2>SKOR TABLOSU</h2>
-        </div>
-        <div class="project-center-title">
-            <div class="main-title">TÜRKİYE STEM YARIŞMASI</div>
-            <div class="sub-title">Çizgi İzleyen Yarışması</div>
-        </div>
-        <div class="status-block">
-            <div class="digital-clock" id="live-clock">00:00:00</div>
-            <div class="system-status"><span class="status-dot"></span> SİSTEM AKTİF</div>
-        </div>
-    </div>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr style="background: none; border: none; font-weight: bold; color: var(--altin);">
-                    <th class="col-rank">SIRA</th>
-                    <th class="col-name">TAKIM ADI</th>
-                    <th class="col-time">SÜRE</th>
-                    <th class="col-penalty">CEZA</th>
-                    <th class="col-total">TOPLAM</th>
-                </tr>
-            </thead>
-            <tbody id="display-area"></tbody>
-        </table>
-    </div>
 
-    <div class="footer-info">
-        <span id="total-label" style="color:var(--altin); font-weight:bold;">Yükleniyor...</span>
-        <span id="page-label" style="font-size: 1.1rem; letter-spacing: 1px;">Sayfa 1 / 1</span>
+<main class="screen-wrap">
+    <section class="score-hero">
+        <div class="hero-left">
+            <div class="category-kicker">
+                <span>Canlı</span> • <span>Skor</span> • <span>Çizgi İzleyen</span>
+            </div>
+            <div class="score-title">
+                <div class="title-icon"><i class="fas fa-route"></i></div>
+                <h1>Çizgi İzleyen <strong>Sonuçları</strong></h1>
+            </div>
+            <p class="hero-note">
+                Sıralama toplam süreye göre otomatik güncellenir. En düşük toplam süre en iyi derece olarak listelenir.
+            </p>
+        </div>
+
+        <div class="hero-right">
+            <div class="weather-card">
+                <div class="weather-icon" id="weather-icon"><i class="fas fa-cloud-sun"></i></div>
+                <div class="weather-info">
+                    <span class="weather-city">İSTANBUL</span>
+                    <strong id="weather-temp">--°C</strong>
+                    <span id="weather-desc">Hava durumu yükleniyor</span>
+                </div>
+            </div>
+
+            <div class="leader-card">
+                <img class="leader-cup" src="https://i.hizliresim.com/itn77f6.png" alt="Lider Kupası">
+                <span id="leader-name">Lider bekleniyor</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="table-panel">
+        <div class="table-head">
+            <div>Sıra</div>
+            <div class="team-cell">Takım Adı</div>
+            <div>Süre</div>
+            <div>Ceza</div>
+            <div>Toplam</div>
+        </div>
+        <div class="table-body" id="display-area">
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <strong>Sonuçlar yükleniyor...</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="bottom-bar">
+        <span class="footer-system"><span class="status-dot"></span> Sistem Aktif</span>
+        <span class="footer-clock" id="footer-clock">00:00:00</span>
+        <span id="total-label" style="display:none;">Yükleniyor...</span>
+        <span id="page-label" style="display:none;">Sayfa 1 / 1</span>
+        <span id="hero-total" style="display:none;"></span>
+        <span id="hero-page" style="display:none;"></span>
         <div class="controls">
-            <i class="fas fa-lightbulb icon-btn" title="Tema Değiştir" onclick="document.body.classList.toggle('light-theme')"></i>
-            <i class="fas fa-expand icon-btn" title="Tam Ekran" onclick="toggleFullScreen()"></i>
+            <button class="icon-btn" title="Sonuç Portalına Dön" onclick="window.location.href='https://serkantutuncu9.github.io/Portal/'">
+                <i class="fas fa-house"></i>
+            </button>
+            <button class="icon-btn" title="Tema Değiştir" onclick="document.body.classList.toggle('light-theme')">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+            <button class="icon-btn" title="Tam Ekran" onclick="toggleFullScreen()">
+                <i class="fas fa-expand"></i>
+            </button>
         </div>
-    </div>
-</div>
+    </section>
+</main>
 
 <script>
     let allEntries = [];
     let currentPage = 0;
-    const itemsPerPage = 9; 
-    
-    // Yeni tablonuzun CSV çıktı formatına dönüştürülmüş güncel linki
+    const itemsPerPage = 9;
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVfTp7wZiJaJ95n2H7NWiEWQIvn6SX7V6t8hK0FbsqCirFD-Os7KIMe4O1_Im3uOERV3VUYwdKcYod/pub?output=csv&gid=660813098';
 
     function toggleFullScreen() {
         if (!document.fullscreenElement) document.documentElement.requestFullscreen();
         else document.exitFullscreen();
     }
-    
-    function updateClock() { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('tr-TR'); }
+
+    function updateClock() {
+        document.getElementById('footer-clock').innerText = new Date().toLocaleTimeString('tr-TR');
+    }
     setInterval(updateClock, 1000);
+
+    async function updateWeather() {
+        const iconEl = document.getElementById('weather-icon');
+        const tempEl = document.getElementById('weather-temp');
+        const descEl = document.getElementById('weather-desc');
+        if (!iconEl || !tempEl || !descEl) return;
+
+        const weatherMap = {
+            0: ['Güneşli', 'fa-sun'],
+            1: ['Az bulutlu', 'fa-cloud-sun'],
+            2: ['Parçalı bulutlu', 'fa-cloud-sun'],
+            3: ['Bulutlu', 'fa-cloud'],
+            45: ['Sisli', 'fa-smog'],
+            48: ['Sisli', 'fa-smog'],
+            51: ['Hafif çisenti', 'fa-cloud-rain'],
+            53: ['Çisenti', 'fa-cloud-rain'],
+            55: ['Yoğun çisenti', 'fa-cloud-rain'],
+            61: ['Hafif yağmur', 'fa-cloud-rain'],
+            63: ['Yağmurlu', 'fa-cloud-showers-heavy'],
+            65: ['Kuvvetli yağmur', 'fa-cloud-showers-heavy'],
+            71: ['Hafif kar', 'fa-snowflake'],
+            73: ['Karlı', 'fa-snowflake'],
+            75: ['Yoğun kar', 'fa-snowflake'],
+            80: ['Sağanak', 'fa-cloud-showers-heavy'],
+            81: ['Sağanak', 'fa-cloud-showers-heavy'],
+            82: ['Kuvvetli sağanak', 'fa-cloud-showers-heavy'],
+            95: ['Gök gürültülü', 'fa-bolt']
+        };
+
+        try {
+            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current=temperature_2m,weather_code&timezone=Europe%2FIstanbul');
+            const data = await res.json();
+            const temp = Math.round(data.current.temperature_2m);
+            const code = data.current.weather_code;
+            const [desc, icon] = weatherMap[code] || ['İstanbul havası', 'fa-cloud-sun'];
+            tempEl.innerText = `${temp}°C`;
+            descEl.innerText = desc;
+            iconEl.innerHTML = `<i class="fas ${icon}"></i>`;
+        } catch (e) {
+            tempEl.innerText = '--°C';
+            descEl.innerText = 'İstanbul';
+            iconEl.innerHTML = '<i class="fas fa-cloud-sun"></i>';
+        }
+    }
 
     async function fetchData() {
         try {
             const response = await fetch(CSV_URL + '&cb=' + Date.now());
             const rawData = await response.text();
-            
             const rows = rawData.split(/\r?\n/);
             const separator = rows[0].includes(';') ? ';' : ',';
             let tempEntries = [];
 
             for (let i = 1; i < rows.length; i++) {
                 if (!rows[i].trim()) continue;
-                
                 const cols = rows[i].split(separator);
-                
-                // Belirttiğiniz sütun dizilimi: 
-                // cols[0]: Sıra No, cols[1]: takimid, cols[2]: takimadi, cols[3]: Süre, cols[4]: Ceza, cols[5]: Toplam
+
                 if (cols[2] && cols[2].trim() !== "" && !cols[2].includes("takimadi")) {
                     let nameVal = cols[2].replace(/"/g, '').trim();
-                    let timeRaw = cols[3]?.trim() || '0';
-                    let penaltyRaw = cols[4]?.trim() || '0';
-                    let totalRaw = cols[5]?.trim() || '0';
-                    
+                    let timeRaw = cols[3]?.replace(/"/g, '').trim() || '0';
+                    let penaltyRaw = cols[4]?.replace(/"/g, '').trim() || '0';
+                    let totalRaw = cols[5]?.replace(/"/g, '').trim() || '0';
                     let totalVal = parseFloat(totalRaw.replace(',', '.'));
-                    
-                    // Henüz süre/ceza girilmemiş veya 0 olan takımları listenin sonuna atmak için kontrol
                     const isWaiting = (timeRaw === '0' || timeRaw === '') && (penaltyRaw === '0' || penaltyRaw === '');
-                    
+
                     tempEntries.push({
                         name: nameVal,
-                        time: timeRaw, 
+                        time: timeRaw,
                         penalty: penaltyRaw,
                         total: isNaN(totalVal) || isWaiting ? 999999 : totalVal,
                         isWaiting: isWaiting
                     });
                 }
             }
-            // En düşük toplam süreye (en iyi dereceye) göre sıralama
+
             tempEntries.sort((a, b) => a.total - b.total);
             allEntries = tempEntries;
-        } catch (err) { console.error("Veri hatası:", err); }
+        } catch (err) {
+            console.error("Veri hatası:", err);
+            document.getElementById('display-area').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <strong>Veri alınamadı.</strong>
+                </div>`;
+        }
     }
 
     function renderTable() {
         const tbody = document.getElementById('display-area');
-        if (allEntries.length === 0) return;
+        if (allEntries.length === 0) {
+            tbody.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-hourglass-half"></i>
+                    <strong>Henüz sonuç bulunmuyor.</strong>
+                </div>`;
+            document.getElementById('total-label').innerText = 'Toplam 0 Takım';
+            document.getElementById('leader-name').innerText = 'Lider bekleniyor';
+            return;
+        }
 
         const totalPages = Math.ceil(allEntries.length / itemsPerPage);
         if (currentPage >= totalPages) currentPage = 0;
@@ -225,13 +1192,11 @@
             const globalRank = start + index + 1;
             const isWaiting = item.total === 999999;
             const statusText = isWaiting ? '<span class="waiting-text">Yarışma bekleniyor...</span>' : '';
-            
             let rankDisplay = globalRank;
             let specialClass = "";
-            
-            // Sıralama Efektleri (Bekleyenler podyum dışı kalır)
+
             if (globalRank === 1 && !isWaiting) {
-                rankDisplay = '<i class="fas fa-trophy" style="color:var(--altin)"></i>';
+                rankDisplay = '<img class="winner-trophy stem-cup" src="https://i.hizliresim.com/itn77f6.png" alt="Şampiyonluk Kupası">';
                 specialClass = "rank-1";
             } else if (globalRank === 2 && !isWaiting) {
                 specialClass = "rank-2";
@@ -239,39 +1204,157 @@
                 specialClass = "rank-3";
             }
 
-            html += `<tr class="${specialClass}">
-                <td class="col-rank">${rankDisplay}</td>
-                <td class="col-name"><strong>${item.name}</strong>${statusText}</td>
-                <td class="col-time">${isWaiting ? '-' : item.time + 's'}</td>
-                <td class="col-penalty" style="color:#ff4d4d">${isWaiting ? '-' : '+' + item.penalty + 's'}</td>
-                <td class="col-total">${isWaiting ? '-' : item.total + 's'}</td>
-            </tr>`;
+            html += `<div class="score-row ${specialClass}">
+                <div class="rank-cell">${rankDisplay}</div>
+                <div class="team-cell">
+                    <div class="team-name"><strong>${item.name}</strong>${statusText}</div>
+                </div>
+                <div class="time-cell">${isWaiting ? '-' : item.time + 's'}</div>
+                <div class="penalty-cell">${isWaiting ? '-' : '+' + item.penalty + 's'}</div>
+                <div class="total-cell">${isWaiting ? '-' : item.total + 's'}</div>
+            </div>`;
         });
 
         tbody.innerHTML = html;
         document.getElementById('page-label').innerText = `Sayfa ${currentPage + 1} / ${totalPages}`;
         document.getElementById('total-label').innerText = `Toplam ${allEntries.length} Takım`;
+        const leader = allEntries.find(entry => entry.total !== 999999);
+        document.getElementById('leader-name').innerText = leader ? leader.name : 'Lider bekleniyor';
     }
 
     async function startCycle() {
-        await fetchData(); 
-        renderTable();    
+        await fetchData();
+        renderTable();
 
         setInterval(async () => {
-            if (allEntries.length === 0) return;
+            if (allEntries.length === 0) {
+                await fetchData();
+                renderTable();
+                return;
+            }
+
             const totalPages = Math.ceil(allEntries.length / itemsPerPage);
-            
             currentPage++;
             if (currentPage >= totalPages) {
-                currentPage = 0; 
-                await fetchData(); 
+                currentPage = 0;
+                await fetchData();
             }
-            renderTable(); 
-        }, 12000); 
+            renderTable();
+        }, 12000);
     }
 
-    startCycle();
+    const canvas = document.getElementById('dnaCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, tick = 0;
+
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function pickGradientColor(colors, t) {
+        const scaled = t * (colors.length - 1);
+        const index = Math.floor(scaled);
+        const nextIndex = Math.min(index + 1, colors.length - 1);
+        const localT = scaled - index;
+        return mixHex(colors[index], colors[nextIndex], localT);
+    }
+
+    function mixHex(a, b, t) {
+        const ar = parseInt(a.slice(1, 3), 16);
+        const ag = parseInt(a.slice(3, 5), 16);
+        const ab = parseInt(a.slice(5, 7), 16);
+        const br = parseInt(b.slice(1, 3), 16);
+        const bg = parseInt(b.slice(3, 5), 16);
+        const bb = parseInt(b.slice(5, 7), 16);
+        const rr = Math.round(ar + (br - ar) * t);
+        const rg = Math.round(ag + (bg - ag) * t);
+        const rb = Math.round(ab + (bb - ab) * t);
+        return `rgb(${rr}, ${rg}, ${rb})`;
+    }
+
+    function drawSoftDot(x, y, radius, color) {
+        const glow = ctx.createRadialGradient(x, y, 0, x, y, radius * 4.4);
+        glow.addColorStop(0, color);
+        glow.addColorStop(0.35, color);
+        glow.addColorStop(1, 'rgba(255,255,255,0)');
+
+        ctx.beginPath();
+        ctx.fillStyle = glow;
+        ctx.arc(x, y, radius * 4.4, 0, Math.PI * 2);
+        ctx.globalAlpha = 0.24;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.arc(x - radius * 0.28, y - radius * 0.28, radius * 0.28, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    function drawDNA() {
+        ctx.clearRect(0, 0, width, height);
+        tick += 0.010;
+
+        const isMobile = window.innerWidth <= 760;
+        const count = isMobile ? 24 : 46;
+        const spacing = width / (count - 1);
+        const centerY = height * (isMobile ? 0.52 : 0.48);
+        const amplitude = isMobile ? 44 : 70;
+        const diagonalShift = isMobile ? 0.18 : 0.10;
+
+        const topColors = ['#ff1744', '#ff6d00', '#ffd600', '#00c853', '#00b0ff', '#1a237e', '#7b1fa2', '#ff1493'];
+        const bottomColors = ['#ff1493', '#8a2be2', '#1a237e', '#00b0ff', '#00c853', '#ffd600', '#ff6d00', '#ff1744'];
+
+        for (let i = 0; i < count; i++) {
+            const progress = i / (count - 1);
+            const x = i * spacing;
+            const baseY = centerY + (progress - 0.5) * height * diagonalShift;
+            const wave = tick + i * 0.24;
+            const yTop = baseY + Math.sin(wave) * amplitude;
+            const yBottom = baseY + Math.sin(wave + Math.PI) * amplitude;
+
+            const topColor = pickGradientColor(topColors, progress);
+            const bottomColor = pickGradientColor(bottomColors, progress);
+
+            const rungGradient = ctx.createLinearGradient(x, yTop, x, yBottom);
+            rungGradient.addColorStop(0, topColor);
+            rungGradient.addColorStop(0.5, 'rgba(255,255,255,0.58)');
+            rungGradient.addColorStop(1, bottomColor);
+
+            ctx.beginPath();
+            ctx.moveTo(x, yTop);
+            ctx.bezierCurveTo(
+                x + 14 * Math.sin(wave), (yTop + yBottom) / 2 - 16,
+                x - 14 * Math.cos(wave), (yTop + yBottom) / 2 + 16,
+                x, yBottom
+            );
+            ctx.strokeStyle = rungGradient;
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 0.42;
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+
+            drawSoftDot(x, yTop, isMobile ? 4.6 : 5.8, topColor);
+            drawSoftDot(x, yBottom, isMobile ? 4.6 : 5.8, bottomColor);
+        }
+
+        requestAnimationFrame(drawDNA);
+    }
+
     updateClock();
+    updateWeather();
+    setInterval(updateWeather, 600000);
+    startCycle();
+    setTimeout(drawDNA, 100);
 </script>
 </body>
 </html>
